@@ -1,6 +1,8 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const localStrategy = require("passport-local").Strategy;
 const passport = require("passport");
+const User = require("./models/user");
+const bcrypt = require("bcryptjs");
 
 const GOOGLE_CLIENT_ID =
   "780408703363-a0n9jat99712d4q1u3m7iqrksr6k80sa.apps.googleusercontent.com";
@@ -14,7 +16,7 @@ passport.use(
       callbackURL: "/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
-      done(null, profile);
+      return done(null, profile);
     }
   )
 );
