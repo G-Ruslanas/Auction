@@ -50,6 +50,7 @@ const AuctionSchema = new mongoose.Schema(
       },
     },
     img: { type: String, required: true },
+    status: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

@@ -45,6 +45,7 @@ router.get("/", async (req, res) => {
   try {
     const auctions = await Auction.find()
       .sort({ start_date: "asc", start_time: "asc" })
+      .where({ status: true })
       .limit(6);
     res.status(200).json(auctions);
   } catch (error) {
@@ -58,6 +59,21 @@ router.get("/find/:id", async (req, res) => {
     res.status(200).json(auction);
   } catch (error) {
     res.send(err);
+    res.status(500).json(error);
+  }
+});
+
+router.put("/find/:id", async (req, res) => {
+  try {
+    const updatedAuction = await Auction.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { status: false },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedAuction);
+  } catch (error) {
     res.status(500).json(error);
   }
 });
