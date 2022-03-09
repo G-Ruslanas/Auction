@@ -8,6 +8,7 @@ const User = require("./models/user");
 const authRoute = require("./routes/auth");
 const cors = require("cors");
 const app = express();
+
 require("./passportGoogle");
 require("./passportLocal");
 
