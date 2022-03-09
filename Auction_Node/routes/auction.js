@@ -34,10 +34,8 @@ router.post("/", upload.single("auctionImage"), async (req, res) => {
   });
   try {
     const savedAuction = await newAuction.save((err) => {
-      console.log(err);
       return res.send(err);
     });
-    res.status(200).json(savedAuction);
   } catch (error) {
     res.status(500).json(error);
   }
