@@ -44,7 +44,6 @@ const AuctionSchema = new mongoose.Schema(
       min: 1,
       validate: {
         validator: function (price) {
-          console.log(price, this.bid_start);
           return price > this.bid_start;
         },
         message: "Purchase price should be a higher than bid start",
