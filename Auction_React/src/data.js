@@ -16,7 +16,7 @@ export const auctions = [
   {
     id: 3,
     title: "something",
-    img: "https://www.extremetech.com/wp-content/uploads/2019/12/SONATA-hero-option1-764A5360-edit-640x354.jpg",
+    img: "c",
     desc: "something special",
     price: 5,
   },

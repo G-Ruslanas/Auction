@@ -11,6 +11,8 @@ const app = express();
 require("./passportGoogle");
 require("./passportLocal");
 
+const auctionRouter = require("./routes/auction");
+
 mongoose
   .connect(
     "mongodb+srv://Ruslanas:raHNTxsUDbjytvP6@cluster0.bfmig.mongodb.net/Auction?retryWrites=true&w=majority"
@@ -42,6 +44,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoute);
+app.use("/auction", auctionRouter);
 
 app.listen("5000", () => {
   console.log("Server is running on port 5000");

@@ -45,8 +45,6 @@ const Register = () => {
     }
   };
 
-  console.log(resError);
-
   return (
     <div className="register">
       <div className="wrapper">
