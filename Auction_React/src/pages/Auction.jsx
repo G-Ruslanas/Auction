@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Time from "../components/Time";
 
 const Auction = () => {
   const { id } = useParams();
@@ -39,10 +40,18 @@ const Auction = () => {
           <p className="auctionPrice">
             Auction purchase price: ${auction.purchase_price}
           </p>
-          <p className="auctionTime">
-            Until the end of the auction: 14h 22min 33s
-          </p>
-          <p class="auctionCurrentPrice">
+          <span className="auctionTime">Auction status: </span>
+          {Object.keys(auction).length !== 0 && (
+            <Time
+              startDate={auction.start_date}
+              startTime={auction.start_time}
+              endDate={auction.end_date}
+              endTime={auction.end_time}
+              auction={auction}
+            />
+          )}
+
+          <p className="auctionCurrentPrice">
             Current auction price: $6 ## bidder: Someone{" "}
           </p>
           <div className="buttons">

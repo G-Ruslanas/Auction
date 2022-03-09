@@ -55,7 +55,8 @@ const App = () => {
           />
           <Route
             path="/auction/:id"
-            element={user ? <Auction /> : <Navigate to="/login" />}
+            // element={user ? <Auction /> : <Navigate to="/login" />}
+            element={<Auction />}
           />
         </Routes>
       </div>
