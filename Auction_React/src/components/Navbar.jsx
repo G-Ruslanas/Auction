@@ -1,8 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import io from "socket.io-client";
+
+var connectionOptions = {
+  "force new connection": true,
+  reconnectionAttempts: "Infinity",
+  timeout: 10000,
+  transports: ["websocket"],
+};
+
+var socket = io.connect("http://localhost:5000", connectionOptions);
 
 const Navbar = ({ user }) => {
   const logout = () => {
+    socket.emit("disconnectUser", { username: user.username }, (error) => {
+      if (error) {
+        console.log(error);
+      }
+    });
     window.open("http://localhost:5000/auth/logout", "_self");
   };
   return (

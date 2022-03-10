@@ -3,6 +3,16 @@ import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "react-bootstrap";
+import io from "socket.io-client";
+
+var connectionOptions = {
+  "force new connection": true,
+  reconnectionAttempts: "Infinity",
+  timeout: 10000,
+  transports: ["websocket"],
+};
+
+var socket = io.connect("http://localhost:5000", connectionOptions);
 
 const Login = () => {
   const google = () => {
@@ -22,7 +32,13 @@ const Login = () => {
       withCredentials: true,
       url: "http://localhost:5000/auth/login",
     }).then((res) => {
+      console.log(res);
       if (res.data !== "User with specified credentials not found!") {
+        socket.emit("join", { username }, (error) => {
+          if (error) {
+            console.log(error);
+          }
+        });
         window.location.href = "/";
       } else {
         setResError(res.data);

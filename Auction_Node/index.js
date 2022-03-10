@@ -7,12 +7,19 @@ const bodyParser = require("body-parser");
 const User = require("./models/user");
 const authRoute = require("./routes/auth");
 const cors = require("cors");
+
+const socketio = require("socket.io");
+const http = require("http");
+
 const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
 require("./passportGoogle");
 require("./passportLocal");
 
 const auctionRouter = require("./routes/auction");
+const { addUser, removeUser, addSocketId } = require("./users");
 
 mongoose
   .connect(
@@ -44,9 +51,21 @@ app.use(cookieParser("secretcode"));
 app.use(passport.initialize());
 app.use(passport.session());
 
+//socket
+io.on("connection", (socket) => {
+  socket.on("join", ({ username }, callback) => {
+    const users = addUser({ id: socket.id, name: username });
+    console.log(users);
+  });
+  socket.on("disconnectUser", ({ username }, callback) => {
+    removeUser(username);
+  });
+});
+//socket
+
 app.use("/auth", authRoute);
 app.use("/auction", auctionRouter);
 
-app.listen("5000", () => {
+server.listen("5000", () => {
   console.log("Server is running on port 5000");
 });
