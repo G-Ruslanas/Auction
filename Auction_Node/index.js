@@ -19,7 +19,7 @@ require("./passportGoogle");
 require("./passportLocal");
 
 const auctionRouter = require("./routes/auction");
-const { addUser, removeUser, addSocketId } = require("./users");
+const { addUser, removeUser } = require("./users");
 
 mongoose
   .connect(

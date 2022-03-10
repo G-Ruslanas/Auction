@@ -6,15 +6,10 @@ const addUser = ({ id, name }) => {
   return users;
 };
 
-const addSocketId = ({ id }) => {
-  sockets.push(id);
-  return sockets;
-};
-
 const removeUser = (username) => {
   const filtered = users.filter((user) => user.name !== username);
   console.log(filtered);
   users = filtered;
 };
 
-module.exports = { addUser, addSocketId, removeUser };
+module.exports = { addUser, removeUser };
