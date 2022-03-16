@@ -110,7 +110,6 @@ const AddAuction = ({ show, onHide, user }) => {
       });
     }
   };
-  console.log(resError);
   return (
     <Modal size="lg" show={show} centered>
       <form onSubmit={submitForm} encType="multipart/form-data">

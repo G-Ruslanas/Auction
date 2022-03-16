@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 import { intervalToDuration, isBefore } from "date-fns";
 import axios from "axios";
 
-const Time = ({ startDate, startTime, endDate, endTime, auction }) => {
+const Time = ({
+  startDate,
+  startTime,
+  endDate,
+  endTime,
+  auction,
+  setStatus,
+  purchaseStatus,
+  setWinnerStatus,
+}) => {
   const start_date = new Date(startDate + " " + startTime);
   const end_date = new Date(endDate + " " + endTime);
   const [now, setNow] = useState(new Date());
@@ -24,14 +33,20 @@ const Time = ({ startDate, startTime, endDate, endTime, auction }) => {
   }
 
   useEffect(() => {
-    if (isTimeDown && isTimeUp) {
+    if (isTimeDown && isTimeUp && !purchaseStatus) {
+      setStatus(true);
       const interval = setInterval(() => {
         setNow(new Date());
       }, 1000);
       return () => {
         clearInterval(interval);
       };
-    } else if (!isTimeDown && isTimeUp) {
+    } else if (
+      (!isTimeDown && isTimeUp) ||
+      (isTimeDown && isTimeUp && purchaseStatus)
+    ) {
+      setStatus(false);
+      setWinnerStatus(true);
       const updateAuction = async () => {
         try {
           const res = await axios.put(
@@ -43,7 +58,14 @@ const Time = ({ startDate, startTime, endDate, endTime, auction }) => {
       };
       updateAuction();
     }
-  }, [isTimeUp, isTimeDown]);
+  }, [
+    isTimeUp,
+    isTimeDown,
+    auction._id,
+    purchaseStatus,
+    setStatus,
+    setWinnerStatus,
+  ]);
 
   if (isTimeUp) {
     const duration = intervalToDuration({
@@ -59,12 +81,23 @@ const Time = ({ startDate, startTime, endDate, endTime, auction }) => {
   return (
     <>
       {!isTimeUp ? (
-        <span className="auctionTime">Upcoming Auction</span>
-      ) : !isTimeDown ? (
-        <span className="auctionTime">Auction Is Over</span>
+        <>
+          <span className="auctionTime">Upcoming Auction</span>
+        </>
+      ) : !isTimeDown || purchaseStatus ? (
+        <>
+          <span className="auctionTime">Auction Is Over</span>
+        </>
       ) : (
         <span className="auctionTime">
-          {days + ":" + hours + ":" + minutes + ":" + seconds}
+          {days +
+            " days: " +
+            hours +
+            " hours: " +
+            minutes +
+            " minutes: " +
+            seconds +
+            " seconds"}
         </span>
       )}
     </>

@@ -4,8 +4,12 @@ const passport = require("passport");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const User = require("./models/user");
 const authRoute = require("./routes/auth");
+const bidRoute = require("./routes/bid");
+const winnerRoute = require("./routes/winner");
+const noWinnerRoute = require("./routes/nowinner");
+const userRoute = require("./routes/user");
+
 const cors = require("cors");
 
 const socketio = require("socket.io");
@@ -19,7 +23,7 @@ require("./passportGoogle");
 require("./passportLocal");
 
 const auctionRouter = require("./routes/auction");
-const { addUser, removeUser } = require("./users");
+const { addUser, removeUser, getUsersInRoom } = require("./users");
 
 mongoose
   .connect(
@@ -53,18 +57,28 @@ app.use(passport.session());
 
 //socket
 io.on("connection", (socket) => {
-  socket.on("join", ({ username }, callback) => {
-    const users = addUser({ id: socket.id, name: username });
-    console.log(users);
+  socket.on("join", ({ username, room }, callback) => {
+    const users = addUser({ id: socket.id, name: username, room });
   });
   socket.on("disconnectUser", ({ username }, callback) => {
     removeUser(username);
+  });
+
+  socket.on("bid", ({ res, name }, callback) => {
+    socket.emit("message", res.data.bid, name);
+    // const users = getUsersInRoom("auction");
+    // io.to(users.room).emit("message", res.data.bid);
+    socket.broadcast.emit("message", res.data.bid, name);
   });
 });
 //socket
 
 app.use("/auth", authRoute);
 app.use("/auction", auctionRouter);
+app.use("/bid", bidRoute);
+app.use("/winner", winnerRoute);
+app.use("/nowinner", noWinnerRoute);
+app.use("/user", userRoute);
 
 server.listen("5000", () => {
   console.log("Server is running on port 5000");

@@ -1,7 +1,7 @@
 let users = [];
 
-const addUser = ({ id, name }) => {
-  const user = { id, name };
+const addUser = ({ id, name, room }) => {
+  const user = { id, name, room };
   users.push(user);
   return users;
 };
@@ -12,4 +12,8 @@ const removeUser = (username) => {
   users = filtered;
 };
 
-module.exports = { addUser, removeUser };
+const getUsersInRoom = (room) => {
+  return users.filter((user) => user.room === room);
+};
+
+module.exports = { addUser, removeUser, getUsersInRoom };

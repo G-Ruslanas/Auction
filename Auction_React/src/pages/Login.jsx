@@ -34,7 +34,7 @@ const Login = () => {
     }).then((res) => {
       console.log(res);
       if (res.data !== "User with specified credentials not found!") {
-        socket.emit("join", { username }, (error) => {
+        socket.emit("join", { username, room: "auction" }, (error) => {
           if (error) {
             console.log(error);
           }
