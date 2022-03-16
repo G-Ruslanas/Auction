@@ -40,6 +40,9 @@ const Navbar = ({ user }) => {
             />
           </li>
           <li className="listItem">{user.username || user.displayName}</li>
+          <Link className="link" to="/cart">
+            Cart
+          </Link>
           <li className="listItem" onClick={logout}>
             Logout
           </li>
