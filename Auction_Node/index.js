@@ -9,6 +9,7 @@ const bidRoute = require("./routes/bid");
 const winnerRoute = require("./routes/winner");
 const noWinnerRoute = require("./routes/nowinner");
 const userRoute = require("./routes/user");
+const stripeRoute = require("./routes/stripe");
 
 const cors = require("cors");
 
@@ -79,6 +80,7 @@ app.use("/bid", bidRoute);
 app.use("/winner", winnerRoute);
 app.use("/nowinner", noWinnerRoute);
 app.use("/user", userRoute);
+app.use("/stripe", stripeRoute);
 
 server.listen("5000", () => {
   console.log("Server is running on port 5000");

@@ -1,36 +1,89 @@
-import React from "react";
-import Navbar from "../components/Navbar";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Alert } from "react-bootstrap";
+import StripeCheckout from "react-stripe-checkout";
 
-const Cart = () => {
+const Cart = ({ user }) => {
+  const [wonAuctions, setWonAuctions] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    const getWonAuctions = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/winner/find/${user._id}`
+        );
+        setWonAuctions(res.data);
+        let price = 0;
+        for (let obj of res.data) {
+          price = price + obj.purchase_price;
+          setTotal(price);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getWonAuctions();
+  }, [user._id]);
+
+  const handleToken = async (token) => {
+    const response = await axios.post("http://localhost:5000/stripe/checkout", {
+      auctions: wonAuctions,
+      total,
+      token,
+    });
+    console.log(wonAuctions);
+    const { status } = response.data;
+    if (status === "success") {
+      for (const obj of wonAuctions) {
+        const res = await axios.put("http://localhost:5000/winner/paid", {
+          id: obj._id,
+        });
+      }
+      setStatus("Success!");
+    } else {
+      setStatus("Something went wrong!");
+    }
+  };
+
   return (
     <div className="cart">
-      <div className="cart_info">
-        <div className="cart_product">
-          <div className="cart_image">
-            <img
-              src="https://addons.prestashop.com/1390804-pbig/auction-pro-online-auctions-bidding.jpg"
-              alt="image"
-              className="image"
-            />
-          </div>
-          <div className="cart_details">
-            <span>
-              <b>Title:</b> Title
-            </span>
-            <span>
-              <b>ID:</b> ID
-            </span>
-            <span>
-              <b>Category:</b> Category
-            </span>
-            <span>
-              <b>Description:</b> Description
-            </span>
-            <span>
-              <b>Price:</b> Price
-            </span>
-          </div>
-        </div>
+      <div className="cart_wrapper">
+        {wonAuctions.map((wonAuction, index) => {
+          return (
+            <>
+              <div className="cart_info" key={index}>
+                <div className="cart_product">
+                  <div className="cart_image">
+                    <img
+                      src={`uploads/${wonAuction.img}`}
+                      alt=""
+                      className="image"
+                    />
+                  </div>
+                  <div className="cart_details">
+                    <span>
+                      <b>Title:</b> {wonAuction.title}
+                    </span>
+                    <span>
+                      <b>ID:</b> {wonAuction._id}
+                    </span>
+                    <span>
+                      <b>Category:</b> {wonAuction.category}
+                    </span>
+                    <span>
+                      <b>Description:</b> {wonAuction.desc}
+                    </span>
+                    <span>
+                      <b>Price:</b> {wonAuction.purchase_price}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </>
+          );
+        })}
       </div>
       <div className="cart_summary">
         <h1>ORDER SUMMARY</h1>
@@ -46,9 +99,17 @@ const Cart = () => {
           <span>
             <b>Total</b>
           </span>
-          <span>$ 10</span>
+          <span>$ {total}</span>
         </div>
-        <button className="cart_button">Purchase</button>
+        {status && <Alert variant="info">{status}</Alert>}
+        <StripeCheckout
+          stripeKey="pk_test_51K1VS2IjqPb8FkRvICnfh27rAzMswXf2jGP2zBOUHW87sNfGMyI0fA8D0YFaclvMTLJcAFLjQij5hIbbHxw00aL800JJTQbv7B"
+          className="cart_button"
+          token={handleToken}
+          billingAddress
+          shippingAddress
+          amount={total * 100}
+        ></StripeCheckout>
       </div>
     </div>
   );

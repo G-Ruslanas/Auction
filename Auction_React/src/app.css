@@ -282,12 +282,15 @@ input {
   padding: 25px 100px;
 }
 
+.cart_wrapper {
+  flex: 2;
+}
+
 .cart_info {
   flex: 2;
   border-radius: 10px;
   border: 0.5px solid lightgray;
   padding: 20px;
-  height: 400px;
   margin-top: 20px;
   margin-right: 20px;
   -webkit-box-shadow: 2px 4px 20px 12px rgba(191, 234, 255, 0.67);
@@ -299,7 +302,7 @@ input {
   border-radius: 10px;
   border: 0.5px solid lightgray;
   padding: 20px;
-  height: 400px;
+  height: 500px;
   margin-top: 20px;
   margin-right: 20px;
   -webkit-box-shadow: 2px 4px 20px 12px rgba(191, 234, 255, 0.67);
@@ -314,6 +317,7 @@ input {
 
 .cart_product {
   display: flex;
+  /* flex-direction: column; */
 }
 
 .cart_details {

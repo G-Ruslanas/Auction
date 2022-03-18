@@ -12,7 +12,7 @@ router.get("/find/:id", async (req, res) => {
 
 router.put("/update", async (req, res) => {
   let findBid = await Bid.findOne({ auction_id: req.body.auction_id });
-  if (findBid.length !== 0) {
+  if (findBid && findBid.length !== 0) {
     if (req.body.bid > findBid.bid) {
       try {
         const updatedBid = await Bid.findOneAndUpdate(
