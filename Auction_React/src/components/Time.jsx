@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { intervalToDuration, isBefore } from "date-fns";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Time = ({
   startDate,
@@ -11,7 +12,9 @@ const Time = ({
   setStatus,
   purchaseStatus,
   setWinnerStatus,
+  resPurchaseStatus,
 }) => {
+  let navigate = useNavigate();
   const start_date = new Date(startDate + " " + startTime);
   const end_date = new Date(endDate + " " + endTime);
   const [now, setNow] = useState(new Date());
@@ -26,10 +29,15 @@ const Time = ({
 
   if (!isTimeUp) {
     let refresh = start_date.getTime() - now.getTime();
-    console.log(start_date.getTime(), now.getTime());
     setTimeout(function () {
       window.location.reload(true);
     }, refresh);
+  }
+
+  if (!isTimeDown || resPurchaseStatus) {
+    setTimeout(function () {
+      return navigate("/");
+    }, 15000);
   }
 
   useEffect(() => {
@@ -84,7 +92,7 @@ const Time = ({
         <>
           <span className="auctionTime">Upcoming Auction</span>
         </>
-      ) : !isTimeDown || purchaseStatus ? (
+      ) : !isTimeDown || purchaseStatus || resPurchaseStatus ? (
         <>
           <span className="auctionTime">Auction Is Over</span>
         </>

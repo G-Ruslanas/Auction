@@ -25,6 +25,7 @@ const Auction = ({ user }) => {
   const [winnerStatus, setWinnerStatus] = useState(false);
   const [error, setError] = useState([]);
   const [resError, setResError] = useState("");
+  const [resPurchaseStatus, setResPurchaseStatus] = useState(false);
 
   useEffect(() => {
     const getAuction = async () => {
@@ -66,11 +67,11 @@ const Auction = ({ user }) => {
         } else {
           setResError("");
         }
-
-        socket.emit("bid", { res, name: user.username });
-        socket.on("message", (res, name) => {
+        socket.emit("bid", { res, name: user.username, purchase: false });
+        socket.on("message", (res, name, purchase) => {
           setResBid(res);
           setResName(name);
+          setResPurchaseStatus(purchase);
         });
       } catch (err) {
         console.log(err);
@@ -82,15 +83,33 @@ const Auction = ({ user }) => {
     const getDbBid = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/bid/find/${id}`);
-        const findUser = await axios.get(
-          `http://localhost:5000/user/find/${res.data.user_id}`
-        );
-        setResBid(res.data.bid);
-        socket.emit("bid", { res, name: findUser.data.username });
-        socket.on("message", (res, name) => {
-          setResBid(res);
-          setResName(name);
-        });
+        if (res.data) {
+          const findUser = await axios.get(
+            `http://localhost:5000/user/find/${res.data.user_id}`
+          );
+          setResBid(res.data.bid);
+          socket.emit("bid", {
+            res,
+            name: findUser.data.username,
+            purchase: false,
+          });
+          socket.on("message", (res, name, purchase) => {
+            setResBid(res);
+            setResName(name);
+            setResPurchaseStatus(purchase);
+          });
+        } else {
+          socket.emit("bid", {
+            res: { data: { bid: 0 } },
+            name: "Unknown",
+            purchase: false,
+          });
+          socket.on("message", (res, name, purchase) => {
+            setResBid(res);
+            setResName(name);
+            setResPurchaseStatus(purchase);
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -122,7 +141,7 @@ const Auction = ({ user }) => {
           auction_id: auction._id,
         };
         try {
-          const res = await axios.post("http://localhost:5000/nowinner", data);
+          const res = await axios.put("http://localhost:5000/nowinner", data);
         } catch (error) {
           console.log(error);
         }
@@ -148,6 +167,17 @@ const Auction = ({ user }) => {
     };
     try {
       const res = await axios.put("http://localhost:5000/winner", data);
+      console.log(res);
+      socket.emit("bid", {
+        res: { data: { bid: 0 } },
+        name: "Unknown",
+        purchase: true,
+      });
+      socket.on("message", (res, name, purchase) => {
+        setResBid(res);
+        setResName(name);
+        setResPurchaseStatus(purchase);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -186,9 +216,10 @@ const Auction = ({ user }) => {
               setStatus={setStatus}
               purchaseStatus={purchaseStatus}
               setWinnerStatus={setWinnerStatus}
+              resPurchaseStatus={resPurchaseStatus}
             />
           )}
-          {status && !purchaseStatus && user && (
+          {status && !purchaseStatus && user && !resPurchaseStatus && (
             <>
               <p className="auctionCurrentPrice">
                 Current auction price: {resBid}$
