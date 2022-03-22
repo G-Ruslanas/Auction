@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 
 const Cart = ({ user }) => {
   const [wonAuctions, setWonAuctions] = useState([]);
   const [total, setTotal] = useState(0);
   const [status, setStatus] = useState("");
-
+  let navigate = useNavigate();
   useEffect(() => {
     const getWonAuctions = async () => {
       try {
@@ -33,13 +34,15 @@ const Cart = ({ user }) => {
       total,
       token,
     });
-    console.log(wonAuctions);
     const { status } = response.data;
     if (status === "success") {
       for (const obj of wonAuctions) {
         const res = await axios.put("http://localhost:5000/winner/paid", {
           id: obj._id,
         });
+        setTimeout(function () {
+          window.location.reload(true);
+        }, 10000);
       }
       setStatus("Success!");
     } else {
@@ -50,40 +53,46 @@ const Cart = ({ user }) => {
   return (
     <div className="cart">
       <div className="cart_wrapper">
-        {wonAuctions.map((wonAuction, index) => {
-          return (
-            <>
-              <div className="cart_info" key={index}>
-                <div className="cart_product">
-                  <div className="cart_image">
-                    <img
-                      src={`uploads/${wonAuction.img}`}
-                      alt=""
-                      className="image"
-                    />
-                  </div>
-                  <div className="cart_details">
-                    <span>
-                      <b>Title:</b> {wonAuction.title}
-                    </span>
-                    <span>
-                      <b>ID:</b> {wonAuction._id}
-                    </span>
-                    <span>
-                      <b>Category:</b> {wonAuction.category}
-                    </span>
-                    <span>
-                      <b>Description:</b> {wonAuction.desc}
-                    </span>
-                    <span>
-                      <b>Price:</b> {wonAuction.purchase_price}
-                    </span>
+        {wonAuctions.length !== 0 ? (
+          wonAuctions.map((wonAuction, index) => {
+            return (
+              <>
+                <div className="cart_info" key={index}>
+                  <div className="cart_product">
+                    <div className="cart_image">
+                      <img
+                        src={`uploads/${wonAuction.img}`}
+                        alt=""
+                        className="image"
+                      />
+                    </div>
+                    <div className="cart_details">
+                      <span>
+                        <b>Title:</b> {wonAuction.title}
+                      </span>
+                      <span>
+                        <b>ID:</b> {wonAuction._id}
+                      </span>
+                      <span>
+                        <b>Category:</b> {wonAuction.category}
+                      </span>
+                      <span>
+                        <b>Description:</b> {wonAuction.desc}
+                      </span>
+                      <span>
+                        <b>Price:</b> {wonAuction.purchase_price}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          );
-        })}
+              </>
+            );
+          })
+        ) : (
+          <div className="cart_info">
+            <h1 className="noWinAuction">No Won Auctions</h1>
+          </div>
+        )}
       </div>
       <div className="cart_summary">
         <h1>ORDER SUMMARY</h1>

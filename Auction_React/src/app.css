@@ -359,3 +359,7 @@ input {
     width: 50%;
   }
 }
+
+.noWinAuction {
+  text-align: center;
+}

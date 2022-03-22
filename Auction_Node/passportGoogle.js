@@ -16,7 +16,13 @@ passport.use(
       callbackURL: "/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
-      return done(null, profile);
+      User.findOrCreate(
+        { googleId: profile.id },
+        { username: profile.displayName },
+        (err, user) => {
+          return done(err, user);
+        }
+      );
     }
   )
 );
