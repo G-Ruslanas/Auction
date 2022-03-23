@@ -69,7 +69,6 @@ io.on("connection", (socket) => {
     socket.join(room);
     io.to(room).emit("message", res.data.bid, name, purchase);
     // socket.emit("message", res.data.bid, name, purchase);
-
     // socket.broadcast.emit("message", res.data.bid, name, purchase);
   });
 });

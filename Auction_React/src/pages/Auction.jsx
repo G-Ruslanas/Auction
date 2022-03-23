@@ -92,7 +92,6 @@ const Auction = ({ user }) => {
           const findUser = await axios.get(
             `http://localhost:5000/user/find/${res.data.user_id}`
           );
-          console.log(res.data);
           setResBid(res.data.bid);
 
           socket.emit("bid", {

@@ -19,16 +19,33 @@ const Time = ({
   const end_date = new Date(endDate + " " + endTime);
   const [now, setNow] = useState(new Date());
 
+  const tzNowDate = now.toLocaleString("en-CA", {
+    timeZone: "Europe/Kiev",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const tzNowTime = now.toLocaleString("en-GB", {
+    timeZone: "Europe/Kiev",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  const tz_now_date = new Date(tzNowDate + " " + tzNowTime);
+
   let days = 0;
   let hours = 0;
   let minutes = 0;
   let seconds = 0;
 
-  const isTimeUp = isBefore(start_date, now);
-  const isTimeDown = isBefore(now, end_date);
+  console.log(now, tzNowDate, tzNowTime, tz_now_date);
+  console.log(start_date);
+
+  const isTimeUp = isBefore(start_date, tz_now_date);
+  const isTimeDown = isBefore(tz_now_date, end_date);
 
   if (!isTimeUp) {
-    let refresh = start_date.getTime() - now.getTime();
+    let refresh = start_date.getTime() - tz_now_date.getTime();
     setTimeout(function () {
       window.location.reload(true);
     }, refresh);
@@ -77,7 +94,7 @@ const Time = ({
 
   if (isTimeUp) {
     const duration = intervalToDuration({
-      start: now,
+      start: tz_now_date,
       end: end_date,
     });
     days = duration.days;
