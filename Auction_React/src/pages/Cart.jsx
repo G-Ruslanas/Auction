@@ -1,14 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 
 const Cart = ({ user }) => {
   const [wonAuctions, setWonAuctions] = useState([]);
   const [total, setTotal] = useState(0);
   const [status, setStatus] = useState("");
-  let navigate = useNavigate();
+
   useEffect(() => {
     const getWonAuctions = async () => {
       try {

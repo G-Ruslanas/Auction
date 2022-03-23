@@ -65,11 +65,12 @@ io.on("connection", (socket) => {
     removeUser(username);
   });
 
-  socket.on("bid", ({ res, name, purchase }, callback) => {
-    socket.emit("message", res.data.bid, name, purchase);
-    // const users = getUsersInRoom("auction");
-    // io.to(room).emit("message", res.data.bid, name);
-    socket.broadcast.emit("message", res.data.bid, name, purchase);
+  socket.on("bid", ({ res, name, purchase, room }, callback) => {
+    socket.join(room);
+    io.to(room).emit("message", res.data.bid, name, purchase);
+    // socket.emit("message", res.data.bid, name, purchase);
+
+    // socket.broadcast.emit("message", res.data.bid, name, purchase);
   });
 });
 //socket

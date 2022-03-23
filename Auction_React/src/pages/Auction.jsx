@@ -67,7 +67,12 @@ const Auction = ({ user }) => {
         } else {
           setResError("");
         }
-        socket.emit("bid", { res, name: user.username, purchase: false });
+        socket.emit("bid", {
+          res,
+          name: user.username,
+          purchase: false,
+          room: res.data.auction_id,
+        });
         socket.on("message", (res, name, purchase) => {
           setResBid(res);
           setResName(name);
@@ -87,13 +92,16 @@ const Auction = ({ user }) => {
           const findUser = await axios.get(
             `http://localhost:5000/user/find/${res.data.user_id}`
           );
+          console.log(res.data);
           setResBid(res.data.bid);
+
           socket.emit("bid", {
             res,
             name: findUser.data.username,
             purchase: false,
+            room: res.data.auction_id,
           });
-          socket.on("message", (res, name, purchase) => {
+          socket.on("message", (res, name, purchase, room) => {
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -103,6 +111,7 @@ const Auction = ({ user }) => {
             res: { data: { bid: 0 } },
             name: "Unknown",
             purchase: false,
+            room: auction._id,
           });
           socket.on("message", (res, name, purchase) => {
             setResBid(res);
