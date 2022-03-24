@@ -101,6 +101,7 @@ const Auction = ({ user }) => {
             room: res.data.auction_id,
           });
           socket.on("message", (res, name, purchase, room) => {
+            console.log(purchase);
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -180,6 +181,7 @@ const Auction = ({ user }) => {
         res: { data: { bid: 0 } },
         name: "Unknown",
         purchase: true,
+        room: auction._id,
       });
       socket.on("message", (res, name, purchase) => {
         setResBid(res);
