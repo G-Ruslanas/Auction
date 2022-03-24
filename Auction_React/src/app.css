@@ -363,3 +363,24 @@ input {
 .noWinAuction {
   text-align: center;
 }
+
+.profile {
+  display: flex;
+  padding: 25px 100px;
+  justify-content: space-around;
+  -webkit-box-shadow: 2px 4px 20px 12px rgba(191, 234, 255, 0.67);
+  box-shadow: 2px 4px 20px 12px rgba(191, 234, 255, 0.67);
+}
+
+.leftProfile {
+  flex: 1;
+}
+
+.profileImage {
+  width: 50%;
+  margin: 0% 25%;
+}
+
+.rightProfile {
+  flex: 1;
+}

@@ -39,7 +39,9 @@ const Navbar = ({ user }) => {
               className="avatar"
             />
           </li>
-          <li className="listItem">{user.username || user.displayName}</li>
+          <Link className="link" to="/profile">
+            {user.username || user.displayName}
+          </Link>
           <Link className="link" to="/cart">
             Cart
           </Link>

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Register from "./pages/Register";
 import axios from "axios";
 import Cart from "./pages/Cart";
+import Profile from "./pages/Profile";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -59,10 +60,10 @@ const App = () => {
             element={user ? <Cart user={user} /> : <Navigate to="/" />}
           />
           <Route
-            path="/auction/:id"
-            // element={user ? <Auction /> : <Navigate to="/login" />}
-            element={<Auction user={user} />}
+            path="/profile"
+            element={user ? <Profile user={user} /> : <Navigate to="/" />}
           />
+          <Route path="/auction/:id" element={<Auction user={user} />} />
         </Routes>
       </div>
     </BrowserRouter>

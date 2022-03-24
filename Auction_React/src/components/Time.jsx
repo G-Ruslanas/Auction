@@ -38,9 +38,6 @@ const Time = ({
   let minutes = 0;
   let seconds = 0;
 
-  console.log(now, tzNowDate, tzNowTime, tz_now_date);
-  console.log(start_date);
-
   const isTimeUp = isBefore(start_date, tz_now_date);
   const isTimeDown = isBefore(tz_now_date, end_date);
 

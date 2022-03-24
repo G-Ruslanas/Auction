@@ -123,7 +123,7 @@ const Auction = ({ user }) => {
       }
     };
     getDbBid();
-  }, [id]);
+  }, [id, auction._id]);
 
   useEffect(() => {
     const postWinner = async () => {
@@ -201,6 +201,7 @@ const Auction = ({ user }) => {
           <h1 className="auctionTitle">Auction Title: {auction.title}</h1>
           <p className="auctionCat">Auction Category: {auction.category}</p>
           <p className="auctionDesc">Auction Description: {auction.desc}</p>
+
           <p className="auctionStart">
             Auction start date and time:{" "}
             {auction.start_date + " " + auction.start_time}
@@ -209,6 +210,7 @@ const Auction = ({ user }) => {
             Auction end date and time:{" "}
             {auction.end_date + " " + auction.end_time}
           </p>
+
           <p className="auctionBid">Auction start bid: $ {auction.bid_start}</p>
           <p className="auctionPrice">
             Auction purchase price: $ {auction.purchase_price}
