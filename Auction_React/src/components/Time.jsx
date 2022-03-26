@@ -51,7 +51,7 @@ const Time = ({
   if (!isTimeDown || resPurchaseStatus) {
     setTimeout(function () {
       return navigate("/");
-    }, 15000);
+    }, 10000);
   }
 
   useEffect(() => {

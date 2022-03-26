@@ -50,8 +50,10 @@ const Register = () => {
       <div className="wrapper">
         <form className="right" onSubmit={register}>
           <span className="formTitle">Registration Form</span>
-          {error.map((e) => (
-            <Alert variant="danger">{e}</Alert>
+          {error.map((e, index) => (
+            <Alert variant="danger" key={index}>
+              {e}
+            </Alert>
           ))}
           {resError && <Alert variant="danger">{resError}</Alert>}
           <input

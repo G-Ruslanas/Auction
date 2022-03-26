@@ -32,6 +32,8 @@ const Auction = ({ user }) => {
       try {
         const res = await axios.get(`http://localhost:5000/auction/find/${id}`);
         setAuction(res.data);
+        console.log("asking to join room", id, res);
+        socket.emit("join-room", { room: id });
       } catch (error) {
         console.log(error);
       }
@@ -73,7 +75,8 @@ const Auction = ({ user }) => {
           purchase: false,
           room: res.data.auction_id,
         });
-        socket.on("message", (res, name, purchase) => {
+        socket.on("message", (res, name, purchase, room) => {
+          if (room != id) return console.log("wrong room, skipping");
           setResBid(res);
           setResName(name);
           setResPurchaseStatus(purchase);
@@ -101,7 +104,7 @@ const Auction = ({ user }) => {
             room: res.data.auction_id,
           });
           socket.on("message", (res, name, purchase, room) => {
-            console.log(purchase);
+            if (room != id) return console.log("wrong room, skipping");
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -113,7 +116,8 @@ const Auction = ({ user }) => {
             purchase: false,
             room: auction._id,
           });
-          socket.on("message", (res, name, purchase) => {
+          socket.on("message", (res, name, purchase, room) => {
+            if (room != id) return console.log("wrong room, skipping");
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -176,14 +180,14 @@ const Auction = ({ user }) => {
     };
     try {
       const res = await axios.put("http://localhost:5000/winner", data);
-      console.log(res);
       socket.emit("bid", {
         res: { data: { bid: 0 } },
         name: "Unknown",
         purchase: true,
         room: auction._id,
       });
-      socket.on("message", (res, name, purchase) => {
+      socket.on("message", (res, name, purchase, room) => {
+        if (room != id) return console.log("wrong room, skipping");
         setResBid(res);
         setResName(name);
         setResPurchaseStatus(purchase);
