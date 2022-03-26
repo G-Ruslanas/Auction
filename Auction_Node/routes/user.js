@@ -3,6 +3,7 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
+const req = require("express/lib/request");
 
 const whiteList = ["image/png", "image/jpeg", "image/jpg"];
 
@@ -45,6 +46,17 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
     const repeat_password = req.body.new_repeat_password;
     const current_password = req.body.current_password;
 
+    //Test email address
+    let validEmail = /\S+@\S+\.\S+/;
+    if (!validEmail.test(req.body.email)) {
+      errors.push("Not valid email address");
+    }
+
+    //Test username length
+    if (req.body.username.length < 8) {
+      errors.push("Username should be at least 8 characters long");
+    }
+
     //Test current password match
     const user = await User.findById({ _id: req.body.id });
     const status = await bcrypt.compare(current_password, user.password);
@@ -66,7 +78,7 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
     }
 
     if (
-      (new_password.length < 8 || repeat_password.length) < 8 &&
+      (new_password.length < 8 || repeat_password.length < 8) &&
       (new_password.length !== 0 || repeat_password.length !== 0)
     ) {
       errors.push("New password less than 8 characters long");
@@ -86,16 +98,22 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
     }
 
     //Test if user with username or email exist already
-    const foundUser = await User.findOne({
-      $and: [{ username: req.body.username }, { email: req.body.email }],
+    const foundUserWithUsername = await User.findOne({
+      username: req.body.username,
+    });
+    const foundUserWithEmail = await User.findOne({
+      email: req.body.email,
     });
 
     if (
-      foundUser &&
-      (foundUser.username !== req.body.username ||
-        foundUser.email !== req.body.email)
+      foundUserWithUsername &&
+      req.body.username !== req.body.default_username
     ) {
-      errors.push("User with same username or email already exists");
+      errors.push("User with same username already exists");
+    }
+
+    if (foundUserWithEmail && req.body.email !== req.body.default_email) {
+      errors.push("User with same email already exists");
     }
 
     if (errors.length === 0) {
@@ -114,7 +132,7 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
             password: hashedPassword,
             img: req.file.filename,
           },
-          { new: true }
+          { new: true, runValidators: true }
         );
         res.status(200).json(updatedUser);
       } else {
@@ -124,7 +142,7 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
             $set: req.body,
             password: hashedPassword,
           },
-          { new: true }
+          { new: true, runValidators: true }
         );
         res.status(200).json(updatedUser);
       }

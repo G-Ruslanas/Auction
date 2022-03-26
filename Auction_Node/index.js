@@ -65,12 +65,17 @@ io.on("connection", (socket) => {
     removeUser(username);
   });
 
-  socket.on("bid", ({ res, name, purchase, room }, callback) => {
+  socket.on("join-room", ({ room }) => {
+    console.log("request to join", room, "by", socket.id);
     socket.join(room);
-    io.to(room).emit("message", res.data.bid, name, purchase);
-    setTimeout(() => {
-      socket.leave(room);
-    }, 10000);
+  });
+
+  socket.on("bid", ({ res, name, purchase, room }, callback) => {
+    // socket.join(room);
+    io.to(room).emit("message", res.data.bid, name, purchase, room);
+    // setTimeout(() => {
+    //   socket.leave(room);
+    // }, 10000);
     // socket.emit("message", res.data.bid, name, purchase);
     // socket.broadcast.emit("message", res.data.bid, name, purchase);
   });

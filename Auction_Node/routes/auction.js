@@ -63,6 +63,16 @@ router.get("/find/:id", async (req, res) => {
   }
 });
 
+router.get("/findbyuser/:id", async (req, res) => {
+  try {
+    const auctions = await Auction.find({ user_id: req.params.id });
+    res.status(200).json(auctions);
+  } catch (error) {
+    res.send(err);
+    res.status(500).json(error);
+  }
+});
+
 router.put("/find/:id", async (req, res) => {
   try {
     const updatedAuction = await Auction.findByIdAndUpdate(
