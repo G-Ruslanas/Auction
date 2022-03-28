@@ -76,7 +76,7 @@ const Auction = ({ user }) => {
           room: res.data.auction_id,
         });
         socket.on("message", (res, name, purchase, room) => {
-          if (room != id) return console.log("wrong room, skipping");
+          if (room !== id) return console.log("wrong room, skipping");
           setResBid(res);
           setResName(name);
           setResPurchaseStatus(purchase);
@@ -104,7 +104,7 @@ const Auction = ({ user }) => {
             room: res.data.auction_id,
           });
           socket.on("message", (res, name, purchase, room) => {
-            if (room != id) return console.log("wrong room, skipping");
+            if (room !== id) return console.log("wrong room, skipping");
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -117,7 +117,7 @@ const Auction = ({ user }) => {
             room: auction._id,
           });
           socket.on("message", (res, name, purchase, room) => {
-            if (room != id) return console.log("wrong room, skipping");
+            if (room !== id) return console.log("wrong room, skipping");
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -187,7 +187,7 @@ const Auction = ({ user }) => {
         room: auction._id,
       });
       socket.on("message", (res, name, purchase, room) => {
-        if (room != id) return console.log("wrong room, skipping");
+        if (room !== id) return console.log("wrong room, skipping");
         setResBid(res);
         setResName(name);
         setResPurchaseStatus(purchase);

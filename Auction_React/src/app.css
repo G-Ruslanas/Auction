@@ -266,7 +266,7 @@ input {
   margin-top: 10px;
 }
 
-.buttons {
+.profileButtons {
   display: flex;
   justify-content: space-around;
 }

@@ -3,24 +3,48 @@ import React, { useEffect, useMemo, useState } from "react";
 import EditUser from "../components/EditUser";
 import { useTable, usePagination } from "react-table";
 import "./css/Profile.css";
+import EditAuction from "../components/EditAuction";
+import { Link } from "react-router-dom";
+import CheckAuction from "../components/CheckAuction";
 
 const Profile = ({ user }) => {
   const [modalShow, setModalShow] = useState(false);
   const [auctions, setAuctions] = useState([]);
+  const [auction, setAuction] = useState({});
+  const [editUserModal, setEditUserModal] = useState(false);
+  const [checkModalShow, setCheckModalShow] = useState(false);
 
   useEffect(() => {
     const getAuctions = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/auction/findbyuser/${user._id}`
-        );
-        setAuctions(res.data);
+        // console.log(user.role);
+        if (user.role === "admin") {
+          const res = await axios.get("http://localhost:5000/auction/all");
+          setAuctions(res.data);
+        } else {
+          const res = await axios.get(
+            `http://localhost:5000/auction/findbyuser/${user._id}`
+          );
+          setAuctions(res.data);
+        }
       } catch (error) {
         console.log(error);
       }
     };
     getAuctions();
-  }, [user._id]);
+  }, [user._id, user.role]);
+
+  const handleClick = (row) => {
+    setEditUserModal(true);
+    setAuction(row);
+  };
+
+  const handleOnClick = (row) => {
+    console.log(row);
+    setAuction(row);
+    setCheckModalShow(true);
+  };
+  console.log(auction);
 
   const columns = useMemo(() => {
     return [
@@ -28,6 +52,7 @@ const Profile = ({ user }) => {
       { Header: "Category", accessor: "category" },
       { Header: "Purchase Price", accessor: "purchase_price" },
       { Header: "Bid Start", accessor: "bid_start" },
+      { Header: "Status", accessor: "valid" },
     ];
   }, []);
 
@@ -98,7 +123,7 @@ const Profile = ({ user }) => {
                     {column.render("Header")}
                   </th>
                 ))}
-                <th>Status</th>
+
                 <th>Actions</th>
               </tr>
             ))}
@@ -113,10 +138,36 @@ const Profile = ({ user }) => {
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                     );
                   })}
-                  <td>Valid</td>
-                  <td className="buttons">
-                    <button className="btn-warning">Edit</button>
-                    <button className="btn-info">View</button>
+                  <td className="profileButtons">
+                    {user.role !== "admin" ? (
+                      row.original.valid !== "Pending" ? (
+                        <button
+                          className="btn-warning"
+                          onClick={() => {
+                            handleClick(row.original);
+                          }}
+                        >
+                          Edit
+                        </button>
+                      ) : (
+                        "No Actions"
+                      )
+                    ) : (
+                      <button
+                        className="btn-info"
+                        onClick={() => {
+                          handleOnClick(row.original);
+                        }}
+                      >
+                        Check
+                      </button>
+                    )}
+
+                    {row.original.valid === "Valid" && row.original.status && (
+                      <Link to={`/auction/${row.original._id}`}>
+                        <button className="btn-info">View</button>
+                      </Link>
+                    )}
                   </td>
                 </tr>
               );
@@ -157,6 +208,24 @@ const Profile = ({ user }) => {
             ))}
           </select>
         </div>
+
+        {editUserModal && (
+          <EditAuction
+            show={editUserModal}
+            onHide={() => setEditUserModal(false)}
+            user={user}
+            auction={auction}
+            setAuction={setAuction}
+          ></EditAuction>
+        )}
+        {checkModalShow && (
+          <CheckAuction
+            show={checkModalShow}
+            user={user}
+            auction={auction}
+            onHide={() => setCheckModalShow(false)}
+          ></CheckAuction>
+        )}
       </div>
     </>
   );

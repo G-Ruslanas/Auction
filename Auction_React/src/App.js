@@ -3,10 +3,9 @@ import "./app.css";
 import Home from "./pages/Home";
 import Auction from "./pages/Auction";
 import Login from "./pages/Login";
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Register from "./pages/Register";
-import axios from "axios";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 
