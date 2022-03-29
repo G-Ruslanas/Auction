@@ -77,7 +77,9 @@ router.get("/find/:id", async (req, res) => {
 
 router.get("/findbyuser/:id", async (req, res) => {
   try {
-    const auctions = await Auction.find({ user_id: req.params.id });
+    const auctions = await Auction.find({ user_id: req.params.id }).where({
+      status: true,
+    });
     res.status(200).json(auctions);
   } catch (error) {
     res.send(err);

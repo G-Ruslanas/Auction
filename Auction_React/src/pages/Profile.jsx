@@ -143,20 +143,25 @@ const Profile = ({ user }) => {
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                     );
                   })}
-
                   <td className="profileButtons">
                     {user.role !== "admin" ? (
                       row.original.valid !== "Pending" &&
                       row.original.status ? (
                         <>
-                          <button
-                            className="btn-warning"
-                            onClick={() => {
-                              handleClick(row.original);
-                            }}
-                          >
-                            Edit
-                          </button>
+                          {new Date(
+                            row.original.start_date +
+                              " " +
+                              row.original.start_time
+                          ) > new Date() && (
+                            <button
+                              className="btn-warning"
+                              onClick={() => {
+                                handleClick(row.original);
+                              }}
+                            >
+                              Edit
+                            </button>
+                          )}
                           <button
                             className="btn-dark"
                             onClick={() => {
