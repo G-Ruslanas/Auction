@@ -1,8 +1,15 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
 
 const CheckAuction = ({ show, onHide, user, auction }) => {
-  const [state, setState] = useState();
+  console.log(auction);
+  const [state, setState] = useState({
+    _id: auction._id,
+    adminComment: "",
+    auctionStatus: "",
+  });
+  const [error, setError] = useState("");
 
   const handleState = (evt) => {
     const value = evt.target.value;
@@ -16,7 +23,26 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
 
   const submitForm = async (e) => {
     e.preventDefault();
+
+    try {
+      console.log(state.adminComment !== "", state.auctionStatus !== "");
+      if (state.adminComment !== "" && state.auctionStatus !== "") {
+        setError("");
+        const res = await axios.put(
+          "http://localhost:5000/auction/check",
+          state
+        );
+        onHide();
+        console.log(res);
+      } else {
+        setError("Please fill all fields!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  console.log(error);
 
   return (
     <Modal size="lg" show={show} centered>
@@ -25,6 +51,7 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
           <Modal.Title>Create Auction</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Row>
             <Col>
               <Form.Label>Auction Image</Form.Label>
@@ -137,8 +164,8 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
                 <option disabled value="default">
                   Choose Status
                 </option>
-                <option value="valid">Valid</option>
-                <option value="invalid">Invalid</option>
+                <option value="Valid">Valid</option>
+                <option value="Invalid">Invalid</option>
               </Form.Select>
             </Col>
           </Row>
@@ -146,7 +173,7 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
             <Form.Label>Admin Comment</Form.Label>
             <Form.Control
               type="text"
-              name="admin_comment"
+              name="adminComment"
               onChange={handleState}
             />
           </Row>

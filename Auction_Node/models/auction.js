@@ -51,6 +51,7 @@ const AuctionSchema = new mongoose.Schema(
     },
     img: { type: String, required: true },
     status: { type: Boolean, default: true },
+    message: { type: String, default: "" },
     valid: { type: String, default: "Pending" },
   },
   { timestamps: true }

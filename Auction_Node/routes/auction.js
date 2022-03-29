@@ -45,7 +45,7 @@ router.get("/", async (req, res) => {
   try {
     const auctions = await Auction.find()
       .sort({ start_date: "asc", start_time: "asc" })
-      .where({ status: true })
+      .where({ status: true, valid: "Valid" })
       .limit(6);
     res.status(200).json(auctions);
   } catch (error) {
@@ -91,6 +91,22 @@ router.put("/find/:id", async (req, res) => {
       req.params.id,
       {
         $set: { status: false },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedAuction);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.put("/check", async (req, res) => {
+  console.log(req.body);
+  try {
+    const updatedAuction = await Auction.findByIdAndUpdate(
+      { _id: req.body._id },
+      {
+        $set: { valid: req.body.auctionStatus, message: req.body.adminComment },
       },
       { new: true }
     );
@@ -148,6 +164,7 @@ router.put("/update", upload.single("auctionImage"), async (req, res) => {
             img: req.file.filename,
             user_id: req.body.seller,
             desc: req.body.description,
+            valid: "Pending",
           },
           { new: true }
         );
@@ -159,6 +176,7 @@ router.put("/update", upload.single("auctionImage"), async (req, res) => {
             $set: req.body,
             user_id: req.body.seller,
             desc: req.body.description,
+            valid: "Pending",
           },
           { new: true }
         );

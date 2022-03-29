@@ -127,7 +127,7 @@ const EditAuction = ({ show, onHide, user, auction, setAuction }) => {
     <Modal size="lg" show={show} centered>
       <form onSubmit={submitForm} encType="multipart/form-data">
         <Modal.Header>
-          <Modal.Title>Create Auction</Modal.Title>
+          <Modal.Title>Edit Auction</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {error.map((e, index) => (
@@ -252,7 +252,6 @@ const EditAuction = ({ show, onHide, user, auction, setAuction }) => {
               <Form.Label>Auction Image</Form.Label>
               <Form.Control
                 type="file"
-                // required
                 filename="auctionImage"
                 name="auctionImage"
                 onChange={onChangeFile}
@@ -265,7 +264,7 @@ const EditAuction = ({ show, onHide, user, auction, setAuction }) => {
             Close
           </Button>
           <Button variant="primary" type="submit">
-            Add Auction
+            Edit Auction
           </Button>
         </Modal.Footer>
       </form>

@@ -6,6 +6,7 @@ import "./css/Profile.css";
 import EditAuction from "../components/EditAuction";
 import { Link } from "react-router-dom";
 import CheckAuction from "../components/CheckAuction";
+import CheckStatus from "../components/CheckStatus";
 
 const Profile = ({ user }) => {
   const [modalShow, setModalShow] = useState(false);
@@ -13,6 +14,7 @@ const Profile = ({ user }) => {
   const [auction, setAuction] = useState({});
   const [editUserModal, setEditUserModal] = useState(false);
   const [checkModalShow, setCheckModalShow] = useState(false);
+  const [checkStatusModal, setCheckStatusModal] = useState(false);
 
   useEffect(() => {
     const getAuctions = async () => {
@@ -40,11 +42,14 @@ const Profile = ({ user }) => {
   };
 
   const handleOnClick = (row) => {
-    console.log(row);
     setAuction(row);
     setCheckModalShow(true);
   };
-  console.log(auction);
+
+  const handleCheck = (row) => {
+    setAuction(row);
+    setCheckStatusModal(true);
+  };
 
   const columns = useMemo(() => {
     return [
@@ -138,17 +143,29 @@ const Profile = ({ user }) => {
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                     );
                   })}
+
                   <td className="profileButtons">
                     {user.role !== "admin" ? (
-                      row.original.valid !== "Pending" ? (
-                        <button
-                          className="btn-warning"
-                          onClick={() => {
-                            handleClick(row.original);
-                          }}
-                        >
-                          Edit
-                        </button>
+                      row.original.valid !== "Pending" &&
+                      row.original.status ? (
+                        <>
+                          <button
+                            className="btn-warning"
+                            onClick={() => {
+                              handleClick(row.original);
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn-dark"
+                            onClick={() => {
+                              handleCheck(row.original);
+                            }}
+                          >
+                            Check
+                          </button>
+                        </>
                       ) : (
                         "No Actions"
                       )
@@ -225,6 +242,14 @@ const Profile = ({ user }) => {
             auction={auction}
             onHide={() => setCheckModalShow(false)}
           ></CheckAuction>
+        )}
+        {checkStatusModal && (
+          <CheckStatus
+            show={checkStatusModal}
+            user={user}
+            auction={auction}
+            onHide={() => setCheckStatusModal(false)}
+          ></CheckStatus>
         )}
       </div>
     </>
