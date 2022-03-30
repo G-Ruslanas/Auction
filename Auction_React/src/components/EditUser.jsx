@@ -26,6 +26,19 @@ const EditUser = ({ show, onHide, user }) => {
     });
   };
 
+  const handleClick = () => {
+    onHide();
+    setError([]);
+    setResError([]);
+    setState({
+      username: user.username,
+      email: user.email,
+      current_password: "",
+      new_password: "",
+      new_repeat_password: "",
+    });
+  };
+
   const submitForm = async (e) => {
     e.preventDefault();
     const errors = [];
@@ -42,6 +55,7 @@ const EditUser = ({ show, onHide, user }) => {
     formData.append("new_repeat_password", state.new_repeat_password);
     formData.append("profileImage", fileName);
 
+    console.log(state.username);
     if (state.username.length < 8) {
       errors.push("Username should be at least 8 characters long");
     }
@@ -170,7 +184,7 @@ const EditUser = ({ show, onHide, user }) => {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="danger" onClick={onHide}>
+          <Button variant="danger" onClick={handleClick}>
             Close
           </Button>
           <Button variant="primary" type="submit">
