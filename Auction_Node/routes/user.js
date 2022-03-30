@@ -3,7 +3,7 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
-const req = require("express/lib/request");
+const nodemailer = require("nodemailer");
 
 const whiteList = ["image/png", "image/jpeg", "image/jpg"];
 
@@ -39,9 +39,38 @@ router.get("/find/:id", async (req, res) => {
 router.put("/update", upload.single("profileImage"), async (req, res) => {
   let errors = [];
 
+  //Email sender
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "aukcionoinfo@gmail.com",
+      pass: "aukcionas123",
+    },
+  });
+
+  console.log(req.body);
+  const messageUsername =
+    "Username was modified from " +
+    req.body.default_username +
+    " to " +
+    req.body.username +
+    ".";
+  const messageEmail =
+    " Email was modified from " +
+    req.body.default_email +
+    " to " +
+    req.body.email +
+    ".";
+
+  const mailOptions = {
+    from: "aukcionoinfo@gmail.com",
+    to: req.body.default_email,
+    subject: "Your Profile Data was modified!",
+    text: messageUsername + messageEmail,
+  };
+
   console.log(errors);
   try {
-    let valid = false;
     let newPassValid = false;
     let lengthValid = false;
     const new_password = req.body.new_password;
@@ -61,6 +90,7 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
     ) {
       errors.push("No data was modified!");
     }
+
     //Test username length
     if (req.body.username.length < 8) {
       errors.push("Username should be at least 8 characters long");
@@ -153,6 +183,15 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
           },
           { new: true, runValidators: true }
         );
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
+
         res.status(200).json(updatedUser);
       }
     } else {
