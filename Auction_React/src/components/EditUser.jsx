@@ -55,7 +55,18 @@ const EditUser = ({ show, onHide, user }) => {
     formData.append("new_repeat_password", state.new_repeat_password);
     formData.append("profileImage", fileName);
 
-    console.log(state.username);
+    // //Test if some data was modified
+    if (
+      state.username === user.username &&
+      state.email === user.email &&
+      state.current_password.length === 0 &&
+      state.new_password.length === 0 &&
+      state.new_repeat_password.length === 0
+    ) {
+      errors.push("No data was modified!");
+    }
+    // console.log(formData.username, formData.default_username);
+
     if (state.username.length < 8) {
       errors.push("Username should be at least 8 characters long");
     }

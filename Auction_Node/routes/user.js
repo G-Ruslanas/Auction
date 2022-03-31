@@ -83,14 +83,6 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
       errors.push("Not valid email address");
     }
 
-    //Test if some data was modified
-    if (
-      req.body.username === req.body.default_username &&
-      req.body.email === req.body.default_email
-    ) {
-      errors.push("No data was modified!");
-    }
-
     //Test username length
     if (req.body.username.length < 8) {
       errors.push("Username should be at least 8 characters long");
