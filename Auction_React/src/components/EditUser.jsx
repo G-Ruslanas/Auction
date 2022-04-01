@@ -37,6 +37,7 @@ const EditUser = ({ show, onHide, user }) => {
       new_password: "",
       new_repeat_password: "",
     });
+    setFileName("");
   };
 
   const submitForm = async (e) => {
@@ -55,17 +56,18 @@ const EditUser = ({ show, onHide, user }) => {
     formData.append("new_repeat_password", state.new_repeat_password);
     formData.append("profileImage", fileName);
 
+    console.log(fileName);
     // //Test if some data was modified
     if (
       state.username === user.username &&
       state.email === user.email &&
       state.current_password.length === 0 &&
       state.new_password.length === 0 &&
-      state.new_repeat_password.length === 0
+      state.new_repeat_password.length === 0 &&
+      !fileName
     ) {
       errors.push("No data was modified!");
     }
-    // console.log(formData.username, formData.default_username);
 
     if (state.username.length < 8) {
       errors.push("Username should be at least 8 characters long");
@@ -87,9 +89,7 @@ const EditUser = ({ show, onHide, user }) => {
           formData
         );
         console.log(res);
-
         const status = Array.isArray(res.data);
-
         if (status) {
           setResError(res.data);
         } else {
@@ -102,7 +102,6 @@ const EditUser = ({ show, onHide, user }) => {
             new_password: "",
             new_repeat_password: "",
           });
-
           window.open("http://localhost:5000/auth/logout", "_self");
         }
         setError([]);
