@@ -69,7 +69,10 @@ router.put("/paid", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const allWinners = await Winner.find();
+    const allWinners = await Winner.find()
+      .sort({ createdAt: "desc" })
+      // .where({paid: true})
+      .limit(3);
 
     res.status(200).json(allWinners);
   } catch (err) {
