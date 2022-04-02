@@ -67,4 +67,14 @@ router.put("/paid", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const allWinners = await Winner.find();
+
+    res.status(200).json(allWinners);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
