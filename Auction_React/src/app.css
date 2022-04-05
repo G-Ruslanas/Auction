@@ -256,14 +256,33 @@ input {
 .button {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
+
+
 
 .btn {
   background-color: purple;
   color: white;
   font-weight: bold;
-  margin-top: 10px;
+  margin-right: 10px;
+  margin-left: 10px
+}
+
+.search {
+  margin-top: 20px;
+  color: white;
+  margin-right: 0px;
+}
+
+.btn-submit { 
+  background: black;
+  color: white;
+    margin-left: 0px;
+}
+
+.search::placeholder {
+  color: white;
 }
 
 .profileButtons {

@@ -9,6 +9,10 @@ const Home = ({ user }) => {
   const [auctions, setAuctions] = useState([]);
   const [current, setCurrent] = useState(0);
   const [winnersInfo, setWinnersInfo] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("");
+  const [filteredAuctions, setFilteredAuctions] = useState([]);
+  const [searchField, setSearchField] = useState("");
 
   useEffect(() => {
     const getAuctions = async () => {
@@ -21,6 +25,49 @@ const Home = ({ user }) => {
     };
     getAuctions();
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(filters).length !== 0 && filters.category.length !== 0) {
+      const filteredAuctions = auctions.filter((auction) =>
+        Object.entries(filters).every(([key, value]) =>
+          auction[key].includes(value)
+        )
+      );
+      setFilteredAuctions(filteredAuctions);
+    } else {
+      setFilteredAuctions([]);
+    }
+  }, [filters, auctions]);
+
+  useEffect(() => {
+    if (sort === "asc") {
+      if (filteredAuctions.length !== 0) {
+        setFilteredAuctions((prev) => {
+          return [...prev].sort(
+            (first, second) => first.purchase_price - second.purchase_price
+          );
+        });
+      } else {
+        const filteredAuctions = auctions.sort(
+          (first, second) => first.purchase_price - second.purchase_price
+        );
+        setFilteredAuctions(filteredAuctions);
+      }
+    } else if (sort === "desc") {
+      if (filteredAuctions.length !== 0) {
+        setFilteredAuctions((prev) => {
+          return [...prev].sort(
+            (first, second) => second.purchase_price - first.purchase_price
+          );
+        });
+      } else {
+        const filteredAuctions = auctions.sort(
+          (first, second) => second.purchase_price - first.purchase_price
+        );
+        setFilteredAuctions(filteredAuctions);
+      }
+    }
+  }, [sort, filteredAuctions.length, auctions]);
 
   useEffect(() => {
     const getWinners = async () => {
@@ -60,14 +107,75 @@ const Home = ({ user }) => {
     setCurrent(current === 0 ? winnersInfo.length - 1 : current - 1);
   };
 
+  const handleFilters = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setFilters({ ...filters, [name]: value });
+  };
+
+  const handleSort = (e) => {
+    setSort(e.target.value);
+  };
+
+  const handleSearch = (e) => {
+    setSearchField(e.target.value);
+  };
+
+  const handleSearchClick = () => {
+    if (searchField.length !== 0) {
+      const filteredAuctions = auctions.filter((auction) =>
+        auction.title.includes(searchField)
+      );
+      setFilteredAuctions(filteredAuctions);
+    } else {
+      setFilteredAuctions([...auctions]);
+    }
+  };
+
   return (
     <>
       {user && (
         <>
           <div className="button">
+            <div>
+              <select name="category" className="btn" onChange={handleFilters}>
+                <option value="" selected>
+                  Category
+                </option>
+                <option value="electronic">Electronic</option>
+                <option value="music">Music</option>
+              </select>
+              <select
+                name="purchasePrice"
+                className="btn"
+                onChange={handleSort}
+              >
+                <option value="" selected>
+                  Price
+                </option>
+                <option value="asc">Price (asc)</option>
+                <option value="desc">Price (desc)</option>
+              </select>
+            </div>
             <button className="btn" onClick={() => setModalShow(true)}>
               + Auction
             </button>
+
+            <div>
+              <input
+                type="text"
+                className="btn search"
+                placeholder="Search.."
+                onChange={handleSearch}
+              ></input>
+              <button
+                type="button"
+                onClick={handleSearchClick}
+                className="btn btn-submit"
+              >
+                Search
+              </button>
+            </div>
           </div>
           <AddAuction
             show={modalShow}
@@ -78,9 +186,13 @@ const Home = ({ user }) => {
       )}
 
       <div className="home">
-        {auctions.map((auction) => (
-          <Card key={auction._id} auction={auction} />
-        ))}
+        {filteredAuctions.length !== 0
+          ? filteredAuctions.map((auction) => (
+              <Card key={auction._id} auction={auction} />
+            ))
+          : auctions.map((auction) => (
+              <Card key={auction._id} auction={auction} />
+            ))}
       </div>
 
       {/* Slider */}
