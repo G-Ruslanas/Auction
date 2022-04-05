@@ -161,7 +161,7 @@ const Home = ({ user }) => {
               + Auction
             </button>
 
-            <div>
+            <div className="searchButtons">
               <input
                 type="text"
                 className="btn search"
@@ -210,19 +210,23 @@ const Home = ({ user }) => {
                     <img
                       src={`uploads/${winner.img}`}
                       alt={winner._id}
-                      className="slider_image"
+                      className="slider_image img-fluid"
                     />
                   </div>
                   <div className="slider_info">
                     <div>
-                      <h1 className="slider_title">
+                      <h1 className="slider_h1">
                         Auction Title: {winner.title}
                       </h1>
-                      <h1 className="slider_category">
+                      <h1 className="slider_h1">
                         Auction Category: {winner.category}
                       </h1>
-                      <h1>Auction Winner: {winner.username}</h1>
-                      <h1>Auction price: {winner.price}</h1>
+                      <h1 className="slider_h1">
+                        Auction Winner: {winner.username}
+                      </h1>
+                      <h1 className="slider_h1">
+                        Auction price: {winner.price}
+                      </h1>
                     </div>
                   </div>
                 </div>

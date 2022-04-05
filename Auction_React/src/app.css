@@ -257,6 +257,9 @@ input {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 100px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 
@@ -423,6 +426,26 @@ input {
   .image {
     width: 50%;
   }
+  .slider_h1 {
+    font-size: 18px;
+  }
+  .btn {
+    padding: 0px;
+    font-size: 12px;
+  }
+  
+  .searchButtons {
+    display: flex;
+  }
+
+  .search {
+    width: 100px;
+  }
+
+  .btn-submit {
+    height: 18px;
+    margin-top: 20px;
+  }
 }
 
 .noWinAuction {
@@ -451,7 +474,8 @@ input {
 }
 
 .slider {
-  /* width: 100vw; */
+  margin: 100px;
+  margin-top: 0px;
   height: 60vh;
   overflow: hidden;
   display: flex;
@@ -473,7 +497,6 @@ input {
   left: 10px;
   margin: auto;
   cursor: pointer;
-  /* z-index: 2; */
 }
 
 .right_arrow {
@@ -490,7 +513,6 @@ input {
   right: 10px;
   margin: auto;
   cursor: pointer;
-  /* z-index: 2; */
 }
 
 .slider_wrapper {
@@ -519,7 +541,7 @@ input {
 .slider_info {
   flex: 1;
   padding: 15px;
-  padding-right: 250px;
+  padding-right: 300px;
   display: flex;
   padding-left: 0px;
   color: white;
