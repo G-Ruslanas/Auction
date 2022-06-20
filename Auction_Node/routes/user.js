@@ -48,7 +48,6 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
     },
   });
 
-  console.log(req.body);
   const messageUsername =
     "Username was modified from " +
     req.body.default_username +
@@ -69,7 +68,6 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
     text: messageUsername + messageEmail,
   };
 
-  console.log(errors);
   try {
     let newPassValid = false;
     let lengthValid = false;
@@ -190,7 +188,6 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
       res.send(errors);
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   }
 });

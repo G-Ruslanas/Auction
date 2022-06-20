@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
 
 const CheckAuction = ({ show, onHide, user, auction }) => {
-  console.log(auction);
   const [state, setState] = useState({
     _id: auction._id,
     adminComment: "",
@@ -19,13 +18,10 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
     });
   };
 
-  console.log(state);
-
   const submitForm = async (e) => {
     e.preventDefault();
 
     try {
-      console.log(state.adminComment !== "", state.auctionStatus !== "");
       if (state.adminComment !== "" && state.auctionStatus !== "") {
         setError("");
         const res = await axios.put(
@@ -33,7 +29,6 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
           state
         );
         onHide();
-        console.log(res);
       } else {
         setError("Please fill all fields!");
       }
@@ -41,8 +36,6 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
       console.log(err);
     }
   };
-
-  console.log(error);
 
   return (
     <Modal size="lg" show={show} centered>

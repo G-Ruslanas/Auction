@@ -92,7 +92,6 @@ const AddAuction = ({ show, onHide, user }) => {
         withCredentials: true,
         url: "http://localhost:5000/auction/",
       }).then((res) => {
-        console.log(res.data.errors);
         if (res.data.errors) {
           Object.values(res.data.errors).map((err) =>
             resErrors.push(err.message)

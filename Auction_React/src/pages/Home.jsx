@@ -139,8 +139,6 @@ const Home = ({ user }) => {
       setFilteredAuctions([...auctions]);
     }
   };
-  console.log(filteredAuctions);
-  console.log(status);
 
   return (
     <>

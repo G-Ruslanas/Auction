@@ -8,7 +8,6 @@ const addUser = ({ id, name, room }) => {
 
 const removeUser = (username) => {
   const filtered = users.filter((user) => user.name !== username);
-  console.log(filtered);
   users = filtered;
 };
 

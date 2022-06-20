@@ -145,7 +145,6 @@ const Auction = ({ user }) => {
         };
         try {
           const res = await axios.put("http://localhost:5000/winner", data);
-          console.log(res);
         } catch (error) {
           console.log(error);
         }

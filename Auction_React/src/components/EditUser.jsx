@@ -56,7 +56,6 @@ const EditUser = ({ show, onHide, user }) => {
     formData.append("new_repeat_password", state.new_repeat_password);
     formData.append("profileImage", fileName);
 
-    console.log(fileName);
     // //Test if some data was modified
     if (
       state.username === user.username &&
@@ -88,7 +87,6 @@ const EditUser = ({ show, onHide, user }) => {
           "http://localhost:5000/user/update",
           formData
         );
-        console.log(res);
         const status = Array.isArray(res.data);
         if (status) {
           setResError(res.data);

@@ -32,7 +32,6 @@ const Login = () => {
       withCredentials: true,
       url: "http://localhost:5000/auth/login",
     }).then((res) => {
-      console.log(res);
       if (res.data !== "User with specified credentials not found!") {
         socket.emit("join", { username, room: "auction" }, (error) => {
           if (error) {

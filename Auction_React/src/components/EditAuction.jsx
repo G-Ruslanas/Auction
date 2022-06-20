@@ -111,7 +111,6 @@ const EditAuction = ({ show, onHide, user, auction, setAuction }) => {
           setResError([]);
           onHide(false);
         }
-        console.log(res);
       } catch (err) {
         console.log(err);
       }

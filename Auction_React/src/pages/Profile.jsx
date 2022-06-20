@@ -18,7 +18,6 @@ const Profile = ({ user }) => {
   useEffect(() => {
     const getAuctions = async () => {
       try {
-        // console.log(user.role);
         if (user.role === "admin") {
           const res = await axios.get("http://localhost:5000/auction/all");
           setAuctions(res.data);

@@ -103,7 +103,6 @@ router.put("/find/:id", async (req, res) => {
 });
 
 router.put("/check", async (req, res) => {
-  console.log(req.body);
   try {
     const updatedAuction = await Auction.findByIdAndUpdate(
       { _id: req.body._id },
@@ -185,7 +184,6 @@ router.put("/update", upload.single("auctionImage"), async (req, res) => {
         res.status(200).json(updatedAuction);
       }
     } catch (error) {
-      console.log(error);
       res.status(500).json(error);
     }
   } else {

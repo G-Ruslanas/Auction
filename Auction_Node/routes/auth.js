@@ -50,11 +50,9 @@ router.post("/login", (req, res, next) => {
 });
 
 router.post("/register", (req, res) => {
-  console.log(req.body);
   User.findOne(
     { $or: [{ username: req.body.username }, { email: req.body.email }] },
     async (err, doc) => {
-      console.log(doc);
       if (err) throw err;
       if (doc) res.send("Account with same credentials already exist");
       if (!doc) {
