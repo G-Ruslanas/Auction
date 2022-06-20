@@ -13,6 +13,7 @@ const Home = ({ user }) => {
   const [sort, setSort] = useState("");
   const [filteredAuctions, setFilteredAuctions] = useState([]);
   const [searchField, setSearchField] = useState("");
+  const [status, setStatus] = useState(true);
 
   useEffect(() => {
     const getAuctions = async () => {
@@ -36,6 +37,7 @@ const Home = ({ user }) => {
       setFilteredAuctions(filteredAuctions);
     } else {
       setFilteredAuctions([]);
+      setStatus(true);
     }
   }, [filters, auctions]);
 
@@ -126,11 +128,19 @@ const Home = ({ user }) => {
       const filteredAuctions = auctions.filter((auction) =>
         auction.title.includes(searchField)
       );
-      setFilteredAuctions(filteredAuctions);
+      setStatus(true);
+      if (filteredAuctions.length !== 0) {
+        setFilteredAuctions(filteredAuctions);
+      } else {
+        setFilteredAuctions([]);
+        setStatus(false);
+      }
     } else {
       setFilteredAuctions([...auctions]);
     }
   };
+  console.log(filteredAuctions);
+  console.log(status);
 
   return (
     <>
@@ -186,13 +196,17 @@ const Home = ({ user }) => {
       )}
 
       <div className="home">
-        {filteredAuctions.length !== 0
-          ? filteredAuctions.map((auction) => (
-              <Card key={auction._id} auction={auction} />
-            ))
-          : auctions.map((auction) => (
-              <Card key={auction._id} auction={auction} />
-            ))}
+        {filteredAuctions.length !== 0 ? (
+          filteredAuctions.map((auction) => (
+            <Card key={auction._id} auction={auction} />
+          ))
+        ) : status ? (
+          auctions.map((auction) => (
+            <Card key={auction._id} auction={auction} />
+          ))
+        ) : (
+          <h1 className="noAuctions">No Auctions Found</h1>
+        )}
       </div>
 
       {/* Slider */}

@@ -548,3 +548,10 @@ input {
   justify-content: center;
   align-items: center;
 }
+
+.noAuctions {
+  width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+      margin-top: 20px;
+}
