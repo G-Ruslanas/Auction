@@ -3,7 +3,7 @@ const stripe = require("stripe")(
   "sk_test_51K1VS2IjqPb8FkRvOEh2wsJ91lxQSlWCESSdU7PGo5gtNKOGsF8OPA2PdIBtUExRPWrSLwSEgPE0UObRgbrcnDyj009s6jZG46"
 );
 
-//POST stripe
+//Post stripe
 router.post("/checkout", async (req, res) => {
   let error;
   let status;
@@ -38,4 +38,5 @@ router.post("/checkout", async (req, res) => {
   }
   res.json({ error, status });
 });
+
 module.exports = router;

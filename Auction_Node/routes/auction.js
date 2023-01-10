@@ -25,6 +25,7 @@ const upload = multer({
   },
 });
 
+// Create new Auction with image upload
 router.post("/", upload.single("auctionImage"), async (req, res) => {
   const newAuction = new Auction({
     ...req.body,
@@ -33,7 +34,7 @@ router.post("/", upload.single("auctionImage"), async (req, res) => {
     desc: req.body.description,
   });
   try {
-    const savedAuction = await newAuction.save((err) => {
+    await newAuction.save((err) => {
       return res.send(err);
     });
   } catch (error) {
@@ -41,22 +42,22 @@ router.post("/", upload.single("auctionImage"), async (req, res) => {
   }
 });
 
+//Find auctions, sort it by date, statuses
 router.get("/", async (req, res) => {
   try {
     const auctions = await Auction.find()
       .sort({ start_date: "asc", start_time: "asc" })
-      .where({ status: true, valid: "Valid" })
-      .limit(6);
+      .where({ status: true, valid: "Valid" });
     res.status(200).json(auctions);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
+//Find all auctions, with status pending
 router.get("/all", async (req, res) => {
   try {
     const auctions = await Auction.find().where({
-      status: true,
       valid: "Pending",
     });
     res.status(200).json(auctions);
@@ -65,28 +66,27 @@ router.get("/all", async (req, res) => {
   }
 });
 
+//Find auction by ID
 router.get("/find/:id", async (req, res) => {
   try {
     const auction = await Auction.findById(req.params.id);
     res.status(200).json(auction);
   } catch (error) {
-    res.send(err);
     res.status(500).json(error);
   }
 });
 
+//Find Auction by User ID
 router.get("/findbyuser/:id", async (req, res) => {
   try {
-    const auctions = await Auction.find({ user_id: req.params.id }).where({
-      status: true,
-    });
+    const auctions = await Auction.find({ user_id: req.params.id });
     res.status(200).json(auctions);
   } catch (error) {
-    res.send(err);
     res.status(500).json(error);
   }
 });
 
+//Update auction by ID
 router.put("/find/:id", async (req, res) => {
   try {
     const updatedAuction = await Auction.findByIdAndUpdate(
@@ -102,12 +102,17 @@ router.put("/find/:id", async (req, res) => {
   }
 });
 
+//Auction validation check for Administrator
 router.put("/check", async (req, res) => {
   try {
     const updatedAuction = await Auction.findByIdAndUpdate(
       { _id: req.body._id },
       {
-        $set: { valid: req.body.auctionStatus, message: req.body.adminComment },
+        $set: {
+          valid: req.body.auctionStatus,
+          message: req.body.adminComment,
+          status: true,
+        },
       },
       { new: true }
     );
@@ -117,6 +122,7 @@ router.put("/check", async (req, res) => {
   }
 });
 
+//Auction update with image upload
 router.put("/update", upload.single("auctionImage"), async (req, res) => {
   const errors = [];
   const currentFullDate = new Date();
@@ -188,6 +194,50 @@ router.put("/update", upload.single("auctionImage"), async (req, res) => {
     }
   } else {
     res.send(errors);
+  }
+});
+
+//Change Auction property to true if no winner after time runs out
+router.put("/nowinner", async (req, res) => {
+  try {
+    const findNoWinner = await Auction.findOneAndUpdate(
+      { _id: req.body.auction_id },
+      { valid: "No Winner" },
+      { new: true }
+    );
+    res.status(200).json(findNoWinner);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Set favorites for specific user ID
+router.put("/setfavorite", async (req, res) => {
+  try {
+    const findFavorite = await Auction.findOne(
+      {
+        _id: req.body.auction_id,
+      },
+      { favorites: { $elemMatch: { $eq: req.body.user_id } } }
+    );
+    if (findFavorite.favorites.length === 0) {
+      const setFavorites = await Auction.findOneAndUpdate(
+        { _id: req.body.auction_id },
+        { $addToSet: { favorites: req.body.user_id } },
+        { new: true }
+      );
+      res.status(200).json(setFavorites);
+    } else {
+      const pulledFavorites = await Auction.findOneAndUpdate(
+        { _id: req.body.auction_id },
+        { $pull: { favorites: req.body.user_id } },
+        { new: true }
+      );
+      res.status(200).json(pulledFavorites);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
   }
 });
 

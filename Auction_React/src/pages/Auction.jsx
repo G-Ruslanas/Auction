@@ -2,19 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Time from "../components/Time";
-import io from "socket.io-client";
 import { Alert } from "react-bootstrap";
+import AutomaticBid from "../components/AutomaticBid";
+import "./css/Auction.css";
 
-var connectionOptions = {
-  "force new connection": true,
-  reconnectionAttempts: "Infinity",
-  timeout: 10000,
-  transports: ["websocket"],
-};
-
-var socket = io.connect("http://localhost:5000", connectionOptions);
-
-const Auction = ({ user }) => {
+const Auction = ({ user, socket }) => {
   const { id } = useParams();
   const [auction, setAuction] = useState({});
   const [bid, setBid] = useState(0);
@@ -26,13 +18,13 @@ const Auction = ({ user }) => {
   const [error, setError] = useState([]);
   const [resError, setResError] = useState("");
   const [resPurchaseStatus, setResPurchaseStatus] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
     const getAuction = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/auction/find/${id}`);
         setAuction(res.data);
-        console.log("asking to join room", id, res);
         socket.emit("join-room", { room: id });
       } catch (error) {
         console.log(error);
@@ -70,16 +62,17 @@ const Auction = ({ user }) => {
           setResError("");
         }
         socket.emit("bid", {
-          res,
+          bid: res.data.bid,
           name: user.username,
           purchase: false,
           room: res.data.auction_id,
         });
         socket.on("message", (res, name, purchase, room) => {
-          if (room !== id) return console.log("wrong room, skipping");
-          setResBid(res);
-          setResName(name);
-          setResPurchaseStatus(purchase);
+          if (room === id) {
+            setResBid(res);
+            setResName(name);
+            setResPurchaseStatus(purchase);
+          }
         });
       } catch (err) {
         console.log(err);
@@ -96,28 +89,27 @@ const Auction = ({ user }) => {
             `http://localhost:5000/user/find/${res.data.user_id}`
           );
           setResBid(res.data.bid);
-
           socket.emit("bid", {
-            res,
+            bid: res.data.bid,
             name: findUser.data.username,
             purchase: false,
             room: res.data.auction_id,
           });
           socket.on("message", (res, name, purchase, room) => {
-            if (room !== id) return console.log("wrong room, skipping");
+            if (room !== id) return;
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
           });
         } else {
           socket.emit("bid", {
-            res: { data: { bid: 0 } },
+            bid: 0,
             name: "Unknown",
             purchase: false,
             room: auction._id,
           });
           socket.on("message", (res, name, purchase, room) => {
-            if (room !== id) return console.log("wrong room, skipping");
+            if (room !== id) return;
             setResBid(res);
             setResName(name);
             setResPurchaseStatus(purchase);
@@ -144,7 +136,7 @@ const Auction = ({ user }) => {
           price: resBid,
         };
         try {
-          const res = await axios.put("http://localhost:5000/winner", data);
+          await axios.put("http://localhost:5000/winner", data);
         } catch (error) {
           console.log(error);
         }
@@ -153,7 +145,7 @@ const Auction = ({ user }) => {
           auction_id: auction._id,
         };
         try {
-          const res = await axios.put("http://localhost:5000/nowinner", data);
+          await axios.put("http://localhost:5000/auction/nowinner", data);
         } catch (error) {
           console.log(error);
         }
@@ -170,6 +162,15 @@ const Auction = ({ user }) => {
     winnerStatus,
   ]);
 
+  const handleAutomaticBid = async () => {
+    setModalShow(true);
+    const data = {
+      user_id: user._id,
+      auction_id: auction._id,
+      automatic_bid: bid,
+    };
+  };
+
   const handlePurchase = async () => {
     setPurchaseStatus(true);
     const data = {
@@ -178,15 +179,15 @@ const Auction = ({ user }) => {
       price: auction.purchase_price,
     };
     try {
-      const res = await axios.put("http://localhost:5000/winner", data);
+      await axios.put("http://localhost:5000/winner", data);
       socket.emit("bid", {
-        res: { data: { bid: 0 } },
+        bid: 0,
         name: "Unknown",
         purchase: true,
         room: auction._id,
       });
       socket.on("message", (res, name, purchase, room) => {
-        if (room !== id) return console.log("wrong room, skipping");
+        if (room !== id) return;
         setResBid(res);
         setResName(name);
         setResPurchaseStatus(purchase);
@@ -216,9 +217,9 @@ const Auction = ({ user }) => {
             {auction.end_date + " " + auction.end_time}
           </p>
 
-          <p className="auctionBid">Auction start bid: $ {auction.bid_start}</p>
+          <p className="auctionBid">Auction start bid: {auction.bid_start}$</p>
           <p className="auctionPrice">
-            Auction purchase price: $ {auction.purchase_price}
+            Auction purchase price: {auction.purchase_price}$
           </p>
           <span className="auctionTime">Auction status: </span>
           {Object.keys(auction).length !== 0 && (
@@ -237,7 +238,8 @@ const Auction = ({ user }) => {
           {status && !purchaseStatus && user && !resPurchaseStatus && (
             <>
               <p className="auctionCurrentPrice">
-                Current auction price: {resBid}$
+                {/* {resBid == 0 ? 0 : "Current auction price:" + { resBid } + "$"} */}
+                <p>Current auction price: {resBid}$</p>
               </p>
               <p className="auctionCurrentPrice">Bidder: {resName}</p>
               {error.map((e, index) => (
@@ -257,14 +259,25 @@ const Auction = ({ user }) => {
                 <button className="bidButton" onClick={handleClick}>
                   Bid
                 </button>
-                <button className="purchaseButton" onClick={handlePurchase}>
-                  Purchase
+                {resBid < auction.purchase_price && (
+                  <button className="purchaseButton" onClick={handlePurchase}>
+                    Purchase
+                  </button>
+                )}
+                <button className="purchaseButton" onClick={handleAutomaticBid}>
+                  Automatic Bid
                 </button>
               </div>
             </>
           )}
         </div>
       </div>
+      <AutomaticBid
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        user={user}
+        auction={auction}
+      ></AutomaticBid>
     </div>
   );
 };

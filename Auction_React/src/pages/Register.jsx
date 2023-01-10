@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "react-bootstrap";
+import "./css/Register.css";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -82,7 +83,7 @@ const Register = () => {
           />
           <button className="submit">Register</button>
           <span className="formSpan">
-            Have An Account? <Link to="/login">Login</Link>
+            You do have an account? <Link to="/login">Login</Link>
           </span>
         </form>
       </div>

@@ -109,6 +109,7 @@ const AddAuction = ({ show, onHide, user }) => {
       });
     }
   };
+
   return (
     <Modal size="lg" show={show} centered>
       <form onSubmit={submitForm} encType="multipart/form-data">
@@ -149,6 +150,8 @@ const AddAuction = ({ show, onHide, user }) => {
                 </option>
                 <option value="electronic">Electronic</option>
                 <option value="music">Music</option>
+                <option value="games">Games</option>
+                <option value="other">Other</option>
               </Form.Select>
             </Col>
           </Row>

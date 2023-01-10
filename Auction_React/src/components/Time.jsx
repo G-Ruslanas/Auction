@@ -51,7 +51,7 @@ const Time = ({
   if (!isTimeDown || resPurchaseStatus) {
     setTimeout(function () {
       return navigate("/");
-    }, 10000);
+    }, 5000);
   }
 
   useEffect(() => {
@@ -71,9 +71,7 @@ const Time = ({
       setWinnerStatus(true);
       const updateAuction = async () => {
         try {
-          const res = await axios.put(
-            `http://localhost:5000/auction/find/${auction._id}`
-          );
+          await axios.put(`http://localhost:5000/auction/find/${auction._id}`);
         } catch (error) {
           console.log(error);
         }

@@ -3,24 +3,17 @@ import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "react-bootstrap";
-import io from "socket.io-client";
+import "./css/Login.css";
 
-var connectionOptions = {
-  "force new connection": true,
-  reconnectionAttempts: "Infinity",
-  timeout: 10000,
-  transports: ["websocket"],
-};
-
-var socket = io.connect("http://localhost:5000", connectionOptions);
-
-const Login = () => {
+const Login = ({ socket }) => {
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
   const google = () => {
     window.open("http://localhost:5000/auth/google", "_self");
   };
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [resError, setResError] = useState("");
+
   const login = (e) => {
     e.preventDefault();
     axios({
@@ -74,7 +67,7 @@ const Login = () => {
           />
           <button className="submit">Login</button>
           <span className="formSpan">
-            No Account? <Link to="/register">Register</Link>
+            You don't have an account? <Link to="/register">Register</Link>
           </span>
         </form>
       </div>

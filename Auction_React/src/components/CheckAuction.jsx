@@ -24,10 +24,7 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
     try {
       if (state.adminComment !== "" && state.auctionStatus !== "") {
         setError("");
-        const res = await axios.put(
-          "http://localhost:5000/auction/check",
-          state
-        );
+        await axios.put("http://localhost:5000/auction/check", state);
         onHide();
       } else {
         setError("Please fill all fields!");
@@ -49,7 +46,11 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
             <Col>
               <Form.Label>Auction Image</Form.Label>
               <br />
-              <img src={`uploads/${auction.img}`} className="img-fluid"></img>
+              <img
+                src={`uploads/${auction.img}`}
+                className="img-fluid"
+                alt="alt"
+              ></img>
             </Col>
           </Row>
           <Row>

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import StripeCheckout from "react-stripe-checkout";
+import "./css/Cart.css";
 
 const Cart = ({ user }) => {
   const [wonAuctions, setWonAuctions] = useState([]);
@@ -36,7 +37,7 @@ const Cart = ({ user }) => {
     const { status } = response.data;
     if (status === "success") {
       for (const obj of wonAuctions) {
-        const res = await axios.put("http://localhost:5000/winner/paid", {
+        await axios.put("http://localhost:5000/winner/paid", {
           id: obj._id,
         });
         setTimeout(function () {
@@ -62,7 +63,7 @@ const Cart = ({ user }) => {
                       <img
                         src={`uploads/${wonAuction.img}`}
                         alt=""
-                        className="image"
+                        className="cart_img"
                       />
                     </div>
                     <div className="cart_details">
@@ -94,7 +95,7 @@ const Cart = ({ user }) => {
         )}
       </div>
       <div className="cart_summary">
-        <h1>ORDER SUMMARY</h1>
+        <h1 className="cart_order">ORDER SUMMARY</h1>
         <div className="cart_item">
           <span>Estimated Shipping</span>
           <span>$ 5.0</span>

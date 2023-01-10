@@ -1,18 +1,17 @@
 let users = [];
 
-const addUser = ({ id, name, room }) => {
-  const user = { id, name, room };
-  users.push(user);
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
   return users;
 };
 
-const removeUser = (username) => {
-  const filtered = users.filter((user) => user.name !== username);
-  users = filtered;
+const removeUser = (userId) => {
+  return users.filter((user) => user.userId !== userId);
 };
 
-const getUsersInRoom = (room) => {
-  return users.filter((user) => user.room === room);
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
 };
 
-module.exports = { addUser, removeUser, getUsersInRoom };
+module.exports = { addUser, removeUser, getUser };

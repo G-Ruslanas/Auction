@@ -2,12 +2,13 @@ const router = require("express").Router();
 const Winner = require("../models/winner");
 const Auction = require("../models/auction");
 
+//Update auction winner
 router.put("/", async (req, res) => {
   const findWinner = await Winner.find({ auction_id: req.body.auction_id });
   if (findWinner.length === 0) {
     const newWinner = new Winner(req.body);
     try {
-      const savedWinner = await newWinner.save((err) => {
+      await newWinner.save((err) => {
         return res.send(err);
       });
     } catch (error) {
@@ -29,6 +30,7 @@ router.put("/", async (req, res) => {
   }
 });
 
+//Find auction winner by user ID
 router.get("/find/:id", async (req, res) => {
   try {
     const wonAuctions = await Winner.find({
@@ -37,7 +39,6 @@ router.get("/find/:id", async (req, res) => {
     });
 
     const response = [];
-    let price = 0;
     for (const obj of wonAuctions) {
       const wonAuctionInfo = await Auction.findOne({
         _id: obj.auction_id,
@@ -52,6 +53,7 @@ router.get("/find/:id", async (req, res) => {
   }
 });
 
+//Update auctio info if user paid for won auction
 router.put("/paid", async (req, res) => {
   try {
     const paidWonAuction = await Winner.findOneAndUpdate(
@@ -67,13 +69,10 @@ router.put("/paid", async (req, res) => {
   }
 });
 
+//Find all past winners and their auctions
 router.get("/", async (req, res) => {
   try {
-    const allWinners = await Winner.find()
-      .sort({ createdAt: "desc" })
-      // .where({paid: true})
-      .limit(3);
-
+    const allWinners = await Winner.find().sort({ createdAt: "desc" }).limit(3);
     res.status(200).json(allWinners);
   } catch (err) {
     res.status(500).json(err);

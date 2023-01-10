@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 
 const CheckStatus = ({ show, onHide, user, auction }) => {
   return (

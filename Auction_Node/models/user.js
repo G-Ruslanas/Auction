@@ -8,6 +8,8 @@ const UserSchema = new mongoose.Schema(
     img: { type: String },
     googleId: { type: String },
     role: { type: String, default: "" },
+    status: { type: String, default: "Active" },
+    suspension: { type: String },
   },
   { timestamps: true }
 );

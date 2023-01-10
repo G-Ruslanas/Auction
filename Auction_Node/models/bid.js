@@ -6,6 +6,7 @@ const BidSchema = new mongoose.Schema(
     bid: {
       type: Number,
       required: true,
+      default: 0,
     },
   },
   { timestamps: true }

@@ -53,6 +53,8 @@ const AuctionSchema = new mongoose.Schema(
     status: { type: Boolean, default: true },
     message: { type: String, default: "" },
     valid: { type: String, default: "Pending" },
+    no_winner: { type: Boolean, default: false },
+    favorites: { type: Array, default: [] },
   },
   { timestamps: true }
 );

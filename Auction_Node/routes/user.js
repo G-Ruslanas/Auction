@@ -27,6 +27,7 @@ const upload = multer({
   },
 });
 
+//Find user by ID
 router.get("/find/:id", async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
@@ -36,6 +37,46 @@ router.get("/find/:id", async (req, res) => {
   }
 });
 
+//Find all users
+router.get("/find", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//Activate or Suspend user by ID
+router.put("/modify", async (req, res) => {
+  try {
+    if (req.body.status === "Activate") {
+      const user = await User.findOneAndUpdate(
+        { _id: req.body._id },
+        {
+          $set: { status: "Active", suspension: "" },
+        },
+        { new: true }
+      );
+      res.status(200).json(user);
+    } else {
+      const date = new Date();
+      date.setDate(date.getDate() + parseInt(req.body.period));
+      const user = await User.findOneAndUpdate(
+        { _id: req.body._id },
+        {
+          $set: { status: "Suspended", suspension: date.toString() },
+        },
+        { new: true }
+      );
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//Update user profile
 router.put("/update", upload.single("profileImage"), async (req, res) => {
   let errors = [];
 
@@ -176,9 +217,7 @@ router.put("/update", upload.single("profileImage"), async (req, res) => {
 
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
+            res.status(200).json(info.response);
           }
         });
 

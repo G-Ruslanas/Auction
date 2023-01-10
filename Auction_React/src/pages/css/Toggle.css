@@ -1,0 +1,95 @@
+.toggleLabel {
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    height: 30px;
+}
+
+.toggleInput {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggleSpan {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: -40px;
+    right: 30px;
+    bottom: 0;
+    background: black;
+    transition: 0.3s;
+    border-radius: 30px;
+}
+
+.toggleSpan:before {
+    position: absolute;
+    content: "";
+    height: 25px;
+    width: 25px;
+    left: 3px;
+    bottom: 2.6px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.toggleInput:checked+span {
+    background-color: purple;
+}
+
+.toggleInput:checked+span:before {
+    transform: translateX(60px);
+}
+
+.toggleStrong {
+    position: absolute;
+    left: 60%;
+    width: max-content;
+    line-height: 30px;
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 968px) {
+    .toggleLabel {
+        position: relative;
+        display: inline-block;
+        width: 50%;
+        height: 17px;
+    }
+    .toggleSpan {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: -25px;
+        right: 30px;
+        bottom: 12;
+        background: black;
+        transition: 0.3s;
+        border-radius: 30px;
+    }
+    .toggleStrong {
+        position: absolute;
+        left: 27%;
+        top: -38%;
+        width: max-content;
+        line-height: 30px;
+        margin-left: 10px;
+        font-size: 12px;
+    }
+    .toggleSpan:before {
+        position: absolute;
+        content: "";
+        height: 15px;
+        width: 15px;
+        left: 2px;
+        bottom: 0.6px;
+        background-color: #fff;
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+    .toggleInput:checked+span:before {
+        transform: translateX(25px);
+    }
+}

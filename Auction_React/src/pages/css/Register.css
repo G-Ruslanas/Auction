@@ -1,0 +1,36 @@
+.register {
+    height: calc(100vh - 50px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    -webkit-box-shadow: 2px 4px 20px 12px rgba(191, 234, 255, 0.67);
+    box-shadow: 2px 4px 20px 12px rgba(191, 234, 255, 0.67);
+}
+
+.left,
+.right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formTitle {
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.formSpan {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
