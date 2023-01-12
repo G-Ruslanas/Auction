@@ -6,14 +6,13 @@ import Conversation from "../components/Conversation";
 import UsersOnline from "../components/UsersOnline";
 import "./css/Chat.css";
 
-const Chat = ({ user, socket }) => {
+const Chat = ({ user, socket, usersOnline }) => {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const scrollRef = useRef();
-  const [usersOnline, setUsersOnline] = useState([]);
 
   useEffect(() => {
     socket.on("getMessage", (senderId, text) => {
@@ -23,6 +22,10 @@ const Chat = ({ user, socket }) => {
         createdAt: Date.now(),
       });
     });
+  }, []);
+
+  useEffect(() => {
+    usersOnline = [];
   }, []);
 
   useEffect(() => {
@@ -92,20 +95,13 @@ const Chat = ({ user, socket }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    socket.emit("addUser", user._id);
-    socket.on("getUsers", (users) => {
-      setUsersOnline(users);
-    });
-  }, [user]);
-
   return (
     <div className="chat">
       <div className="chatMenu">
         <div className="chatMenuWrapper">
           <span className="chatMenuInput">Your conversations</span>
-          {conversations.map((c) => (
-            <div onClick={() => setCurrentChat(c)}>
+          {conversations.map((c, index) => (
+            <div onClick={() => setCurrentChat(c)} key={index}>
               <Conversation conversation={c} currentUser={user} />
             </div>
           ))}
@@ -116,8 +112,8 @@ const Chat = ({ user, socket }) => {
           {currentChat ? (
             <>
               <div className="chatBoxTop">
-                {messages.map((m) => (
-                  <div ref={scrollRef}>
+                {messages.map((m, index) => (
+                  <div ref={scrollRef} key={index}>
                     <Message message={m} own={m.sender === user._id} />
                   </div>
                 ))}

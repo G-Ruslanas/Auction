@@ -20,7 +20,7 @@ const Home = ({ user }) => {
   const [searchField, setSearchField] = useState("");
   const [status, setStatus] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [auctionsPerPage] = useState(1);
+  const [auctionsPerPage] = useState(6);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -38,7 +38,8 @@ const Home = ({ user }) => {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        await axios.get("http://localhost:5000/user/find");
+        const res = await axios.get("http://localhost:5000/user/find");
+        setUsers(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -99,33 +100,38 @@ const Home = ({ user }) => {
   }, [sort, filteredAuctions.length, auctions.length]);
 
   useEffect(() => {
+    let isMounted = true;
     const getWinners = async () => {
-      try {
-        let winnerInfoArray = [];
+      if (isMounted)
+        try {
+          let winnerInfoArray = [];
 
-        const response = await axios.get("http://localhost:5000/winner");
+          const response = await axios.get("http://localhost:5000/winner");
 
-        for (const data of response.data) {
-          const resUser = await axios.get(
-            `http://localhost:5000/user/find/${data.user_id}`
-          );
-          const resAuction = await axios.get(
-            `http://localhost:5000/auction/find/${data.auction_id}`
-          );
+          for (const data of response.data) {
+            const resUser = await axios.get(
+              `http://localhost:5000/user/find/${data.user_id}`
+            );
+            const resAuction = await axios.get(
+              `http://localhost:5000/auction/find/${data.auction_id}`
+            );
 
-          let combineInfo = {
-            ...resUser.data,
-            ...resAuction.data,
-            ...data,
-          };
-          winnerInfoArray.push(combineInfo);
+            let combineInfo = {
+              ...resUser.data,
+              ...resAuction.data,
+              ...data,
+            };
+            winnerInfoArray.push(combineInfo);
+          }
+          setWinnersInfo(winnerInfoArray);
+        } catch (error) {
+          console.log(error);
         }
-        setWinnersInfo(winnerInfoArray);
-      } catch (error) {
-        console.log(error);
-      }
     };
     getWinners();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const nextSlide = () => {
@@ -242,7 +248,6 @@ const Home = ({ user }) => {
   };
 
   const clearFilters = () => {
-    // setFilters({ category: "", user_id: "" });
     delete filters.category && setFilters({ ...filters });
     delete filters.user_id && setFilters({ ...filters });
     setSort("");
@@ -271,9 +276,7 @@ const Home = ({ user }) => {
                 onChange={handleFilters}
                 value={filters?.category ? filters.category : ""}
               >
-                <option value="" selected>
-                  Category
-                </option>
+                <option value="">Category</option>
                 <option value="electronic">Electronic</option>
                 <option value="music">Music</option>
                 <option value="games">Games</option>
@@ -286,9 +289,7 @@ const Home = ({ user }) => {
                 onChange={handleSort}
                 value={sort}
               >
-                <option value="" selected>
-                  Price
-                </option>
+                <option value="">Price</option>
                 <option value="asc">Price (asc)</option>
                 <option value="desc">Price (desc)</option>
               </select>
@@ -298,15 +299,11 @@ const Home = ({ user }) => {
                 onChange={handleFilters}
                 value={filters?.user_id ? filters.user_id : ""}
               >
-                <option value="" selected>
-                  Seller
-                </option>
+                <option value="">Seller</option>
                 {users.map((user, index) => (
-                  <>
-                    <option value={user._id} key={index}>
-                      {user.username}
-                    </option>
-                  </>
+                  <React.Fragment key={index}>
+                    <option value={user._id}>{user.username}</option>
+                  </React.Fragment>
                 ))}
               </select>
               <input
@@ -389,7 +386,7 @@ const Home = ({ user }) => {
         {winnersInfo.map((winner, index) => {
           if (index === current) {
             return (
-              <>
+              <React.Fragment key={index}>
                 <div className="slider_info">
                   <div>
                     <h1 className="slider_h1">Title: {winner.title}</h1>
@@ -415,7 +412,7 @@ const Home = ({ user }) => {
                     <h1 className="slider_h1">Price: {winner.price} $</h1>
                   </div>
                 </div>
-              </>
+              </React.Fragment>
             );
           }
           return false;

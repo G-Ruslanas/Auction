@@ -23,8 +23,9 @@ const Navbar = ({ user, socket }) => {
           <li className="listItem">
             <img
               src={
-                "https://cdn5.vectorstock.com/i/1000x1000/51/99/icon-of-user-avatar-for-web-site-or-mobile-app-vector-3125199.jpg" ||
-                user.photos[0].value
+                user.img != null
+                  ? `uploads/${user.img}`
+                  : "https://cdn5.vectorstock.com/i/1000x1000/51/99/icon-of-user-avatar-for-web-site-or-mobile-app-vector-3125199.jpg"
               }
               alt="avatar"
               className="avatar"

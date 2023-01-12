@@ -46,7 +46,7 @@ const Profile = ({ user }) => {
       }
     };
     getAuctions();
-  }, [user._id, user.role]);
+  }, [user._id, user.role, checkModalShow, currentTable, editUserModal]);
 
   useEffect(() => {
     const getAutomaticBindsByUserId = async () => {
@@ -60,7 +60,7 @@ const Profile = ({ user }) => {
       }
     };
     getAutomaticBindsByUserId();
-  }, [user._id, currentTable]);
+  }, [user._id, currentTable, editAutomaticBid]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -243,7 +243,10 @@ const Profile = ({ user }) => {
       <div className="profileButton">
         <button
           className="topProfileButtons"
-          onClick={() => setCurrentTable(true)}
+          onClick={() => {
+            setCurrentTable(true);
+            setCurrentUserTable(false);
+          }}
         >
           Edit Auctions
         </button>

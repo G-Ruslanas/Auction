@@ -26,7 +26,7 @@ const Cart = ({ user }) => {
       }
     };
     getWonAuctions();
-  }, [user._id]);
+  }, [user._id, status]);
 
   const handleToken = async (token) => {
     const response = await axios.post("http://localhost:5000/stripe/checkout", {
@@ -40,9 +40,6 @@ const Cart = ({ user }) => {
         await axios.put("http://localhost:5000/winner/paid", {
           id: obj._id,
         });
-        setTimeout(function () {
-          window.location.reload(true);
-        }, 10000);
       }
       setStatus("Success!");
     } else {
@@ -56,8 +53,8 @@ const Cart = ({ user }) => {
         {wonAuctions.length !== 0 ? (
           wonAuctions.map((wonAuction, index) => {
             return (
-              <>
-                <div className="cart_info" key={index}>
+              <React.Fragment key={index}>
+                <div className="cart_info">
                   <div className="cart_product">
                     <div className="cart_image">
                       <img
@@ -85,7 +82,7 @@ const Cart = ({ user }) => {
                     </div>
                   </div>
                 </div>
-              </>
+              </React.Fragment>
             );
           })
         ) : (

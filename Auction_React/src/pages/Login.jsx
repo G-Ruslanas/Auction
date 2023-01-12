@@ -6,7 +6,6 @@ import { Alert } from "react-bootstrap";
 import "./css/Login.css";
 
 const Login = ({ socket }) => {
-  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
   const google = () => {
     window.open("http://localhost:5000/auth/google", "_self");
   };

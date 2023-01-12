@@ -7,7 +7,8 @@ const addUser = (userId, socketId) => {
 };
 
 const removeUser = (userId) => {
-  return users.filter((user) => user.userId !== userId);
+  users = users.filter((user) => user.userId !== userId);
+  return users;
 };
 
 const getUser = (userId) => {

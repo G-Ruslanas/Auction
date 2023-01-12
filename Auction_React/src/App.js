@@ -23,6 +23,7 @@ var socket = io.connect("http://localhost:5000", connectionOptions);
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [usersOnline, setUsersOnline] = useState([]);
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -106,6 +107,13 @@ const App = () => {
     getUser();
   }, []);
 
+  useEffect(() => {
+    user && socket.emit("addUser", user._id);
+    socket.on("getUsers", (users) => {
+      setUsersOnline(users);
+    });
+  }, [user, socket]);
+
   return (
     <BrowserRouter>
       <div className="App">
@@ -125,7 +133,13 @@ const App = () => {
           />
           <Route
             path="/chat"
-            element={user ? <Chat user={user} socket={socket} /> : <Login />}
+            element={
+              user ? (
+                <Chat user={user} socket={socket} usersOnline={usersOnline} />
+              ) : (
+                <Login />
+              )
+            }
           />
           <Route
             path="/cart"

@@ -17,8 +17,6 @@ const cors = require("cors");
 
 const socketio = require("socket.io");
 const http = require("http");
-const path = require("path");
-console.log(process.env.NODE_ENV);
 
 const app = express();
 
@@ -84,6 +82,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     users = removeUser(socket.userId);
     io.emit("getUsers", users);
+    socket.disconnect();
   });
 
   socket.on("join-room", ({ room }) => {

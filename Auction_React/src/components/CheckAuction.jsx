@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
+import "../pages/css/CheckAuction.css";
 
 const CheckAuction = ({ show, onHide, user, auction }) => {
   const [state, setState] = useState({
@@ -48,7 +49,7 @@ const CheckAuction = ({ show, onHide, user, auction }) => {
               <br />
               <img
                 src={`uploads/${auction.img}`}
-                className="img-fluid"
+                className="checkImgAuction"
                 alt="alt"
               ></img>
             </Col>

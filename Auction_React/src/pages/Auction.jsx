@@ -238,7 +238,6 @@ const Auction = ({ user, socket }) => {
           {status && !purchaseStatus && user && !resPurchaseStatus && (
             <>
               <p className="auctionCurrentPrice">
-                {/* {resBid == 0 ? 0 : "Current auction price:" + { resBid } + "$"} */}
                 <p>Current auction price: {resBid}$</p>
               </p>
               <p className="auctionCurrentPrice">Bidder: {resName}</p>

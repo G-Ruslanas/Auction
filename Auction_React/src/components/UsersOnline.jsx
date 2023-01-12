@@ -39,10 +39,11 @@ const UsersOnline = ({ usersOnline, currentId, setCurrentChat }) => {
   return (
     <>
       <div className="chatOnline">
-        {onlineUsers?.map((onlineUser) => (
+        {onlineUsers?.map((onlineUser, index) => (
           <div
             className="chatOnlineUsers"
             onClick={() => handleClick(onlineUser)}
+            key={index}
           >
             <div className="chatOnlineImgContainer">
               <img

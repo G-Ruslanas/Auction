@@ -22,7 +22,6 @@ const SuspendUser = ({ show, onHide, user, status }) => {
     };
     try {
       const res = axios.put(`http://localhost:5000/user/modify`, data);
-      console.log(res.data);
       onHide();
     } catch (error) {
       console.log(error);

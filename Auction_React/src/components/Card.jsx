@@ -7,7 +7,6 @@ import { useState } from "react";
 import axios from "axios";
 const Card = ({ auctions, user, setAuctions }) => {
   const [favorite, setFavorite] = useState([]);
-  // const [auctions, setAuctions] = useState([]);
 
   useEffect(() => {
     auctions.map((auction) => {
@@ -36,8 +35,8 @@ const Card = ({ auctions, user, setAuctions }) => {
       console.log(error);
     }
   };
-  return auctions.map((auction) => (
-    <>
+  return auctions.map((auction, index) => (
+    <React.Fragment key={index}>
       <div className="card">
         <span className="title">{auction.title}</span>
         <img src={`uploads/${auction.img}`} alt="" className="img" />
@@ -62,7 +61,7 @@ const Card = ({ auctions, user, setAuctions }) => {
           </button>
         </div>
       </div>
-    </>
+    </React.Fragment>
   ));
 };
 

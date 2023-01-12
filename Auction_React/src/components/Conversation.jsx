@@ -6,18 +6,23 @@ import "../pages/css/Conversation.css";
 export default function Conversation({ conversation, currentUser }) {
   const [user, setUser] = useState(null);
   useEffect(() => {
+    let isMounted = true;
     const userId = conversation.members.find((m) => m !== currentUser._id);
     const getUser = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5000/user/find/" + userId
-        );
-        setUser(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+      if (isMounted)
+        try {
+          const res = await axios.get(
+            "http://localhost:5000/user/find/" + userId
+          );
+          setUser(res.data);
+        } catch (err) {
+          console.log(err);
+        }
     };
     getUser();
+    return () => {
+      isMounted = false;
+    };
   }, [currentUser, conversation]);
 
   return (
